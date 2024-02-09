@@ -1,3 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Koulen";
+  src: url("assets/fonts/Koulen-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins-500";
+  src: url("assets/fonts/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins-600";
+  src: url("assets/fonts/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins-700";
+  src: url("assets/fonts/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +43,237 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+html {
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+  color: white;
+  background: #050505;
+  overflow-x: hidden !important;
+  font-family: Poppins-400, sans-serif;
+  scroll-behavior: smooth;
+   height: 100%;
+}
+
+
+.color-black {
+  color: black;
+}
+
+.color-white {
+  color: #FFFFFF;
+}
+
+.color-gray {
+  color: #EAECEF;
+}
+
+.color-red {
+  color: #FF2B53;
+}
+
+.color-green {
+  color: #00FFA3;
+}
+
+.color-yellow {
+  color: #FDEC0B;
+}
+
+.color-blue {
+  color: #3580db;
+}
+
+.text-1 {
+  font-family: "Poppins-500";
+  font-size: 14px;
+  line-height: 18.2px;
+}
+
+.text-2 {
+  font-family: "Poppins-500";
+  font-size: 16px;
+  line-height: 20.8px;
+}
+
+.text-22 {
+  font-family: "Poppins-700";
+  font-size: 16px;
+  line-height: 20.8px;
+}
+
+.text-3 {
+  font-family: "Poppins-600";
+  font-size: 18px;
+  line-height: 23.4px;
+}
+
+.text-32 {
+  font-family: "Poppins-600";
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.text-4 {
+  font-family: "Koulen";
+  font-size: 45px;
+  line-height: 58.5px;
+}
+
+.text-42 {
+  font-family: "Koulen";
+  font-size: 60px;
+  line-height: 60px;
+}
+
+.text-5 {
+  font-family: "Koulen";
+  font-size: 120px;
+  line-height: 156px;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+input,
+input:active,
+input:focus {
+  border: none;
+  outline: none;
+}
+
+input::placeholder {
+  color: #828282;
+}
+
+@media only screen and (max-width: 1599px) {
+  .text-1 {
+    font-size: 14px;
+    line-height: 18.2px;
+  }
+  
+  /*  */
+  .text-2 {
+    font-family: "Poppins-500";
+    font-size: 14px;
+    line-height: 18.2px;
+  }
+  
+  .text-22 {
+    font-family: "Poppins-700";
+    font-size: 16px;
+    line-height: 20.8px;
+  }
+  
+  /*  */
+  .text-3 {
+    font-family: "Poppins-600";
+    font-size: 18px;
+    line-height: 23.4px;
+  }
+  
+  .text-32 {
+    font-family: "Poppins-600";
+    font-size: 20px;
+    line-height: 26px;
+  }
+  
+  .text-4 {
+    font-family: "Koulen";
+    font-size: 45px;
+    line-height: 58.5px;
+  }
+  
+  .text-42 {
+    font-family: "Koulen";
+    font-size: 60px;
+    line-height: 60px;
+  }
+  
+  /*  */
+  .text-5 {
+    font-size: 70px;
+    line-height: 88px;
+  }
+
+  #root {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media only screen and (max-width: 1199px) {
+  .text-1 {
+    font-size: 14px;
+    line-height: 18.2px;
+  }
+  
+  /*  */
+  .text-2 {
+    font-family: "Poppins-500";
+    font-size: 14px;
+    line-height: 18.2px;
+  }
+  
+  .text-22 {
+    font-family: "Poppins-700";
+    font-size: 16px;
+    line-height: 20.8px;
+  }
+  
+  /*  */
+  .text-3 {
+    font-family: "Poppins-600";
+    font-size: 18px;
+    line-height: 23.4px;
+  }
+  
+  .text-32 {
+    font-family: "Poppins-600";
+    font-size: 20px;
+    line-height: 26px;
+  }
+  
+  .text-4 {
+    font-family: "Koulen";
+    font-size: 45px;
+    line-height: 58.5px;
+  }
+  
+  .text-42 {
+    font-family: "Koulen";
+    font-size: 60px;
+    line-height: 60px;
+  }
+  
+  /*  */
+  .text-5 {
+    font-size: 60px;
+    line-height: 78px;
+  }
+
+  #root {
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+/* .Toastify__toast-container */
+.Toastify__toast-container {
+  -webkit-transform: translate3d(0, 0, 1px);
+  transform: translate3d(0, 0, 1px);
+}
+.Toastify__close-button svg {
+  fill: white;
 }
