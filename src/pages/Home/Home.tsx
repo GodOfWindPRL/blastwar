@@ -182,8 +182,9 @@ const Wrap = styled.div`
                 width: 100%;
                 height: auto;
                 top: 50%;
-                transform: translateY(-50%);
+                transform: translateY(-50%) translate3d(0,0,0);
                 mix-blend-mode: plus-lighter;  
+               
             }
         }
     }

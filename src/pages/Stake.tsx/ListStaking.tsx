@@ -19,9 +19,10 @@ const ListStaking = () => {
     const [data, setData] = useState<StakeItem[]>([]);
 
     useEffect(() => {
-        if (address) {
-            getList()
-        }
+        // if (address) {
+        //     getList()
+        // }
+        getList()
     }, [address])
 
     const getList = () => {
@@ -97,7 +98,7 @@ const Wrap = styled.div`
                 width: 100%;
                 height: auto;
                 mix-blend-mode: plus-lighter;
-                transform: translate(-50%, -50%) scale(1.4);
+                transform: translate(-50%, -50%) scale(1.4) translate3d(0,0,0);
             }
             .sli-light {
                 position: absolute;
