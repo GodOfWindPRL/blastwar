@@ -175,20 +175,22 @@ const Wrap = styled.div`
                 flex: 1;
                 position: relative;
                 height: fit-content;
+                display: flex;
+                max-width: 380px;
                 .mli-1 {
                     width: 100%;
                     height: auto;
-                    max-width: 380px;
+                    
                     margin-left: auto;
                 }
                 .mli-2 {
                     position: absolute;
                     top: 50%;
-                    left: 0%;
-                    width: 100%;
+                    left: 50%;
+                    width: 120%;
                     height: auto;
                     mix-blend-mode: plus-lighter;
-                    transform: translateY(-38%);
+                    transform: translate(-36% , -38%);
                     scale: 1.4;
                 }
                 .mli-light {

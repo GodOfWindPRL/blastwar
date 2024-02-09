@@ -20,8 +20,8 @@ if (!PROJECT_ID) {
 const location = window.location.origin;
 
 const metadata = {
-  name: 'MTC.io',
-  description: 'MTC...',
+  name: 'BlastWar',
+  description: 'BlastWar...',
   url: `${location}`,
   icons: [`${location}/apple-touch-icon.png`]
 }
