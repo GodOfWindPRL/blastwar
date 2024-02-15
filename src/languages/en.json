@@ -7,7 +7,7 @@
     "wallet": "Wallet",
     "wrongNetwork": "Wrong Network",
     "homeText": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book",
-    "titleBox": "Titles: Genesys Box",
+    "titleBox": "Genesys Box",
     "placeBids": "Place your Bids",
     "nameHero": "Hero: Abiss Light",
     "nameMonster": "Monster: AntiLight",
@@ -28,5 +28,7 @@
     "nonStaking": "Non Staking",
     "unstakeAll": "Unstake All",
     "stakeAll": "Stake All",
-    "leaderboard": "Leaderboard"
+    "leaderboard": "Leaderboard",
+    "textBox": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+    "topBid": "Top Bid"
 }

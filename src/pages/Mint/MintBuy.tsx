@@ -1,5 +1,6 @@
 import Title from "components/core/Title";
 import imgBox from "assets/images/mint-box.png";
+import imgBox2 from "assets/images/mint-box-2.png";
 import gifBox from "assets/images/mint.gif";
 import imgHero from "assets/images/img-hero.png"
 import imgMonster from "assets/images/img-monster.png"
@@ -9,6 +10,7 @@ import configColor from "constants/configColor";
 import bgBtMint from "assets/images/bg-bt-mint.png"
 import Button from "components/core/Button";
 import numeral from "numeral";
+import { breakpointsMedias } from "constants/breakpoints";
 
 const MintBuy = () => {
     const { t } = useTranslation();
@@ -148,5 +150,76 @@ const Wrap = styled.div`
             width: 157px;
         }
     }
-    
+    ${breakpointsMedias.max1199} {
+        gap: 40px;
+        .mint-list {
+            gap: 40px;
+        }
+        .mint-bt {
+            .mbt-price {
+                width: 372px;
+                height: 76px;
+                padding: 0 30px;
+                gap: 20px;
+            }
+            .mbt-bt {
+                width: 157px;
+            }
+        }
+    }
+    ${breakpointsMedias.max667} {
+        height: fit-content;
+        margin-bottom: auto;
+        gap: 70px;
+        .mint-list {
+            gap: 80px;
+            flex-direction: column;
+            max-width: 335px;
+            .mint-item {
+                border-top: 2px solid ${configColor.yellow};
+                border-bottom: 2px solid ${configColor.yellow};
+                .mi-title {
+                    position: absolute;
+                    top: 100%;
+                    > div {
+                        padding: 8px 20px;
+                    }
+                }
+                .mi-bg {
+                    content: url(${imgBox2});
+                }
+                .mi-gif {
+                    top: 50%;
+                    left: 50%;
+                    width: 80%;
+                    transform: translate(-33%, -33%);
+                }
+                .mi-img {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 65%;
+                    height: 60%;
+                    object-fit: cover;
+                    border-radius: 10px;
+                    border: 1px solid ${configColor.green};
+                }
+            }
+        }
+        .mint-bt {
+            flex-direction: column;
+            max-width: 335px;
+            .mbt-price {
+                width: 100%;
+                max-width: 372px;
+                height: 76px;
+                padding: 0 20px;
+                gap: 10px;
+            }
+            .mbt-bt {
+                width: 100%;
+            }
+        }
+
+    }
 `

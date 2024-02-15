@@ -9,6 +9,8 @@ import configColor from "constants/configColor";
 import { useEffect, useState } from "react";
 import { subStringAddress } from "helpers/format/subStringAddress";
 import numeral from "numeral";
+import { breakpointsMedias } from "constants/breakpoints";
+import { useWidthScreen } from "helpers/hooks/useScreen";
 
 type TopItem = {
     address: string,
@@ -17,6 +19,7 @@ type TopItem = {
 
 const MintBid = () => {
     const { t } = useTranslation();
+    const { width } = useWidthScreen()
 
     const [data, setData] = useState<TopItem[]>([])
 
@@ -46,7 +49,7 @@ const MintBid = () => {
                     <img src={iconBox} alt="" className="mli-3" />
                 </div>
                 <div className="ml-content flex flex-col">
-                    <Title classText="text-4 uppercase" text={t("titleBox")} borderLeft />
+                    <Title className="!w-[fit-content]" classText="text-4 uppercase" text={t("titleBox")} borderLeft />
                     <span className="mlc-text text-2 color-white">{t("textBox")}</span>
                     <div className="mlc-bt">
                         <Button text={t("placeBids")} typeBt="yellow" />
@@ -68,7 +71,7 @@ const MintBid = () => {
                     {data.map((item, index) => <div key={index} className="mrt-row">
                         <div className="mrt-col-1">
                             <span className="mrtc-id uppercase text-22 color-green">#{index + 1}</span>
-                            <span className="mrtc-address text-22 color-white">{subStringAddress(item.address)}</span>
+                            <span className="mrtc-address text-22 color-white">{subStringAddress(item.address, width >= 1600 ? 5 : 4)}</span>
                         </div>
                         <div className="mrt-col-2">
                             <span className="uppercase text-22 color-white">{numeral(item.amount).format("0,0.[00]")}  <span className="uppercase text-2 color-white">$WAR</span></span>
@@ -190,7 +193,7 @@ const Wrap = styled.div`
                     width: 120%;
                     height: auto;
                     mix-blend-mode: plus-lighter;
-                    transform: translate(-36% , -38%);
+                    transform: translate(-36% , -38%) translate3d(0,0,0);
                     scale: 1.4;
                 }
                 .mli-light {
@@ -237,4 +240,59 @@ const Wrap = styled.div`
                 }
             }
         }
+    ${breakpointsMedias.max1599} {
+        gap: 4%;
+        .mint-right {
+            min-width: 350px;
+        }
+    }
+    ${breakpointsMedias.max991} {
+        gap: 40px;
+        flex-direction: column;
+        .mint-right {
+            height: fit-content;
+            width: 100%;
+            min-width: unset;
+            .mr-row {
+                .mr-col-1 {
+                    width: 60%;
+                }
+                .mr-col-2 {
+                    width: 40%;
+                }
+            }
+            .mr-table {
+                overflow: hidden;
+                .mrt-row {
+                    .mrt-col-1 {
+                        width: 60%;
+                    }
+                    .mrt-col-2 {
+                        width: 40%;
+                    }
+                }
+            }
+        }
+        .mint-left {
+            ${breakpointsMedias.max767} {
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                .ml-img {
+                    flex: unset;
+                    max-width: 335px;
+                }
+                .ml-content {
+                    flex: unset;
+                    width: 100%;
+                    .mlc-bt {
+                        width: 100%;
+                        max-width: 267px;
+                        margin: 0 auto;
+                        margin-top: 20px;
+                    }
+                }
+            }
+        }
+    }
 `

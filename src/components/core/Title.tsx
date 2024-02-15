@@ -2,6 +2,7 @@ import styled from "styled-components";
 import imgBot from "assets/images/title-bot.png";
 import imgBot2 from "assets/images/title-bot-red.png";
 import configColor from "constants/configColor";
+import { breakpointsMedias } from "constants/breakpoints";
 
 interface ITitle extends React.BaseHTMLAttributes<HTMLDivElement> {
     text: string,
@@ -41,6 +42,9 @@ const Wrap = styled.div`
         height: 16px;
         top: 100%;
         left: -2px;
+        ${breakpointsMedias.max1199} {
+            width: 112px;
+        }
     }
     > span {
         color: ${configColor.green};

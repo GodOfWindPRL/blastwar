@@ -23,7 +23,7 @@ const Footer = () => {
     }]
 
     return (
-        <Wrap>
+        <Wrap className='footer'>
             <a href={listSocials[0].link} target='_blank' rel='noreferrer' className="fll-item" >
                 {listSocials[0].icon}
             </a>

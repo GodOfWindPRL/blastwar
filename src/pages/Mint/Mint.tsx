@@ -6,6 +6,7 @@ import Wallet from "components/core/Wallet";
 import Footer from "components/footer/Footer";
 import MintBid from "./MintBid";
 import MintBuy from "./MintBuy";
+import { breakpointsMedias } from "constants/breakpoints";
 
 const Mint = () => {
     const [stage, setStage] = useState<"bid" | "mint">("bid");
@@ -22,7 +23,7 @@ const Mint = () => {
                 {stage === "bid" ? <MintBid /> : <MintBuy />}
                 <Logo />
                 <Wallet />
-                <Footer />
+                {<Footer />}
             </div>
         </Wrap>
     )
@@ -62,5 +63,32 @@ const Wrap = styled.div`
         justify-content: center;
         z-index: 1;
         position: relative;
+    }
+    ${breakpointsMedias.max1599} {
+        padding: 36px 78px;
+        .wrap-home {
+            padding: 200px 40px 190px 70px;
+        }
+    }
+    ${breakpointsMedias.max1199} {
+        padding: 36px;
+        .wrap-home {
+            padding: 200px 40px 170px 50px;
+        }
+    }
+    ${breakpointsMedias.max991} {
+        padding: 40px 20px;
+        z-index: 1;
+        position: relative;
+        height: fit-content;
+        .footer {
+            display: none;
+        }
+        .wrap-home {
+            background-image: none;
+            padding: 0;
+            max-width: 600px;
+            margin: auto;
+        }
     }
 `
