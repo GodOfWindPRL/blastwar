@@ -5,12 +5,13 @@ import { breakpointsMedias } from 'constants/breakpoints'
 import bgBt1 from 'assets/images/bt-left-1.png'
 import bgBt2 from 'assets/images/bt-left-2.png'
 import bgBt3 from 'assets/images/bt-left-3.png'
+import bgBt4 from 'assets/images/bt-left-4.png'
 import configColor from 'constants/configColor'
 
 interface IB extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     text: string,
     isLoading?: boolean,
-    typeBt?: "green" | "white" | "yellow",
+    typeBt?: "green" | "white" | "yellow" | "red",
     className?: string,
     disabled?: boolean,
 }
@@ -71,6 +72,15 @@ const Wrap = styled.button`
         .bt-left,
         .bt-right {
             content: url(${bgBt2});
+        }
+    }
+    &.bt-red {
+        .bt-mid {
+            background-color: ${configColor.red};
+        }
+        .bt-left,
+        .bt-right {
+            content: url(${bgBt4});
         }
     }
     &.bt-yellow {

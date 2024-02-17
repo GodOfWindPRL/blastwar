@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { subStringAddress } from "helpers/format/subStringAddress";
 import numeral from "numeral";
 import { useWidthScreen } from "helpers/hooks/useScreen";
+import { breakpointsMedias } from "constants/breakpoints";
 
 type BoardItem = {
     address: string,
@@ -22,7 +23,8 @@ interface ISM {
 const Leaderboard = ({ onShowMain }: ISM) => {
     const { t } = useTranslation();
     const { height, width } = useWidthScreen();
-    const PAGE_SIZE = (width >= 1200 && height < 1000) ? 6 : 8
+    // const PAGE_SIZE = (width >= 1200 && height < 1000) ? Math.floor((height - 1000) / 53) : 8
+    const PAGE_SIZE = 8
     console.log(PAGE_SIZE, height, width)
     const [data, setData] = useState<BoardItem[]>([])
 
@@ -50,7 +52,7 @@ const Leaderboard = ({ onShowMain }: ISM) => {
     return (
         <Wrap className="">
             <span className="text-4 color-green uppercase">{t("leaderboard")}</span>
-            <div className="board-wrap">
+            <div className="board-wrap scrollbar">
                 <table>
                     <thead>
                         <tr>
@@ -117,17 +119,28 @@ const Wrap = styled.div`
     gap: 30px;
     align-items: center;
     flex-direction: column;
+    margin-bottom: 120px;
     .board-wrap {
         background: rgba(0, 255, 163, 0.2);
         width: 100%;
         display: flex;
         margin-bottom: auto;
+        overflow: auto;
+        position: relative;
         table {
             width: 100%;
+            min-width: 1100px;
             thead {
                 tr {
                     height: 53px;
-                    background: rgba(0, 255, 163, 0.2);
+                    /* background: rgba(0, 255, 163, 0.2); */
+                    text-transform: capitalize;
+                    th {
+                        background: rgba(0, 255, 163, 0.2);
+                        position: sticky;
+                        top: 0;
+                        z-index: 1;
+                    }
                 }
             }
             tbody {
@@ -140,5 +153,11 @@ const Wrap = styled.div`
                 }
             }
         }
+    }
+    ${breakpointsMedias.max1199} {
+        margin-bottom: 50px;
+    }
+    ${breakpointsMedias.max991} {
+        margin-top: 120px;
     }
 `

@@ -11,6 +11,7 @@ import { subStringAddress } from "helpers/format/subStringAddress";
 import numeral from "numeral";
 import ListStaking from "./ListStaking";
 import ListNonStaking from "./ListNonStaking";
+import { breakpointsMedias } from "constants/breakpoints";
 
 type TopItem = {
     address: string,
@@ -113,6 +114,10 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                 <div className={`sr-list`}>
                     {tab === "staking" ? <ListStaking /> : <ListNonStaking />}
                 </div>
+                <div className={`sr-list-2`}>
+                    <ListStaking />
+                    <ListNonStaking />
+                </div>
             </div>
         </Wrap>
     )
@@ -193,5 +198,50 @@ const Wrap = styled.div`
                 flex: 1;
                 overflow: hidden;
             }
+            .sr-list-2 {
+                display: none;
+            }
         }
+    ${breakpointsMedias.max1599} {
+        .stake-left {
+            min-width: 360px;
+        }
+    }
+    ${breakpointsMedias.max991} {
+        gap: 30px;
+        flex-direction: column-reverse;
+        /* max-width: 600px; */
+        padding-bottom: 20px;
+        .stake-left {
+            width: 100%;
+            min-width: unset;
+            max-width: 600px;
+            margin-bottom: 10px;
+        }
+        .stake-right {
+            flex: unset;
+            display: flex;
+            height: 600px;
+            width: 100%;
+            max-width: 600px;
+            flex-direction: column;
+            margin-top: 130px;
+        }
+    }
+    ${breakpointsMedias.max490} {
+        .stake-right {
+            height: fit-content;
+            .sr-tabs {
+                display: none;
+            }
+            .sr-list {
+                display: none;
+            }
+            .sr-list-2 {
+                display: flex;
+                flex-direction: column;
+                gap: 60px;
+            }
+        }
+    }
 `

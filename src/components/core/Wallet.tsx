@@ -70,7 +70,7 @@ const Wrap = styled.div`
         width: 241px;
         height: 77px;
         position: fixed;
-        top: 90px;
+        top: 70px;
         right: -165px;
         transition: 0.3s ease-in-out;
         &:hover {

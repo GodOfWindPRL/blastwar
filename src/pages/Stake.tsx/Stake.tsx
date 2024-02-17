@@ -6,6 +6,7 @@ import Wallet from "components/core/Wallet";
 import Statistic from "components/footer/Statistic";
 import StakeMain from "./StakeMain";
 import Leaderboard from "./Leaderboard";
+import { breakpointsMedias } from "constants/breakpoints";
 
 const Stake = () => {
     const [showBoard, setShowBoard] = useState(false);
@@ -57,5 +58,33 @@ const Wrap = styled.div`
         justify-content: center;
         z-index: 1;
         position: relative;
+    }
+    ${breakpointsMedias.max1599} {
+        padding: 36px 78px;
+        .wrap-home {
+            padding: 158px 4.8% 102px 7%;
+        }
+    }
+    ${breakpointsMedias.max1199} {
+        padding: 36px;
+        .wrap-home {
+            padding: 158px 4.8% 142px 7%;
+        }
+    }
+    ${breakpointsMedias.max991} {
+        padding: 40px 20px;
+        z-index: 1;
+        position: relative;
+        height: fit-content;
+        .statistic {
+            position: unset;
+        }
+        .wrap-home {
+            background-image: none;
+            padding: 0;
+            /* max-width: 600px; */
+            margin: auto;
+            flex-direction: column;
+        }
     }
 `

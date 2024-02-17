@@ -236,6 +236,7 @@ const Wrap = styled.div`
                 display: none;
             }
             .home-text {
+                z-index: 0;
                 .ht-content {
                     width: fit-content;
                     background-image: url(${bgText});

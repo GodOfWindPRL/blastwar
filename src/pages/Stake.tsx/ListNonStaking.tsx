@@ -7,6 +7,9 @@ import imgMonster from "assets/images/img-monster-2.png"
 import gifBox from "assets/images/mint.gif";
 import configColor from "constants/configColor";
 import frameStakeRed from "assets/images/stake-frame-red.png";
+import { breakpointsMedias } from "constants/breakpoints";
+import Title from "components/core/Title";
+import { useTranslation } from "react-i18next";
 
 type StakeItem = {
     id: number,
@@ -17,6 +20,7 @@ const ListNonStaking = () => {
     const perRow = 4;
     const { address, isConnected } = useAccount()
     const [data, setData] = useState<StakeItem[]>([]);
+    const { t } = useTranslation()
 
     useEffect(() => {
         // if (address) {
@@ -43,6 +47,16 @@ const ListNonStaking = () => {
 
     return (
         <Wrap className="">
+            <Title
+                isActive={false}
+                classText="text-4 uppercase"
+                text={t("nonStaking")}
+                borderLeft
+                borderRight
+                variant="red"
+                onClick={() => { }}
+                className="sl-tt"
+            />
             <div className="stake-list scrollbar">
                 {data.map((item, index) => <div key={index} className="sl-item">
                     <div className="sli-wrap">
@@ -51,12 +65,12 @@ const ListNonStaking = () => {
                         <img src={item.type === "hero" ? imgHero : imgMonster} alt="" className="sli-img" />
                     </div>
                 </div>)}
-                {Array.from({ length: data.length % perRow }, (v, i) => i).map((item, index) => <div key={index} className="sl-item">
+                {Array.from({ length: data.length % perRow }, (v, i) => i).map((item, index) => <div key={index} className="sl-item sl-item-blank">
                     <div className="sli-wrap"></div>
                 </div>)}
             </div>
             <div className="stake-bt">
-                <Button typeBt="yellow" text="stakeAll" onClick={onUnstakeAll} />
+                <Button typeBt="red" text="stakeAll" onClick={onUnstakeAll} />
             </div>
         </Wrap>
     )
@@ -136,5 +150,37 @@ const Wrap = styled.div`
         width: 228px;
         margin-top: 30px;
         margin-left: auto;
+    }
+    ${breakpointsMedias.max991} {
+        .stake-bt {
+            margin-top: 20px;
+        }
+    }
+    ${breakpointsMedias.max490} {
+        .sl-tt {
+            display: flex;
+            width: fit-content;
+        }
+        .stake-bt {
+            margin-top: 20px;
+            width: 100%;
+        }
+        .stake-list {
+            flex: 1;
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex-wrap: nowrap;
+            display: inline-flexbox;
+            /* scroll-snap-type: x mandatory; */
+            .sl-item {
+                width: calc(50vw - 20px);
+                height: fit-content;
+                /* scroll-snap-align: start; */
+            }
+            .sl-item-blank {
+                display: none;
+            }
+        }
     }
 `
