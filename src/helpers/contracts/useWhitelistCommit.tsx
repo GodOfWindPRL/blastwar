@@ -4,20 +4,21 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
-const useClaim = () => {
+const useWhitelistCommit = (e: string[], amount: bigint) => {
     const { t } = useTranslation()
     const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
-        functionName: 'claim',
-        args: [],
+        functionName: 'whitelistCommit',
+        args: [e],
+        value: amount
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,
         hash: data?.hash
     })
 
-    const onClaim = () => {
+    const onCommit = () => {
         try {
             if (!write) {
                 return;
@@ -30,14 +31,14 @@ const useClaim = () => {
 
     useEffect(() => {
         if (status === "error") {
-            notifyToastify("error", t("bidError"))
+            notifyToastify("error", t("commitError"))
         }
         if (status === "success") {
-            notifyToastify("success", t("bidSuccess"))
+            notifyToastify("success", t("commitSuccess"))
         }
     }, [status])
 
-    return { onClaim, isLoadingClaim: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
+    return { onCommit, isLoadingCommit: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
 }
 
-export default useClaim
+export default useWhitelistCommit

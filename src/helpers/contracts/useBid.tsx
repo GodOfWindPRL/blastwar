@@ -4,20 +4,21 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
-const useClaim = () => {
+const useBid = (e: bigint) => {
     const { t } = useTranslation()
     const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
-        functionName: 'claim',
+        functionName: 'bid',
         args: [],
+        value: e
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,
         hash: data?.hash
     })
 
-    const onClaim = () => {
+    const onBid = () => {
         try {
             if (!write) {
                 return;
@@ -37,7 +38,7 @@ const useClaim = () => {
         }
     }, [status])
 
-    return { onClaim, isLoadingClaim: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
+    return { onBid, isLoadingBid: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
 }
 
-export default useClaim
+export default useBid
