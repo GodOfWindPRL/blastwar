@@ -56,7 +56,7 @@ const MintBid = () => {
                     </div>
                 </div>
             </div>
-            <div className="mint-right">
+            {/* <div className="mint-right">
                 <Title classText="text-4 uppercase" text={t("topBid")} borderLeft borderRight />
                 <div className="mr-row scrollbar">
                     <div className="mr-col-1">
@@ -78,7 +78,7 @@ const MintBid = () => {
                         </div>
                     </div>)}
                 </div>
-            </div>
+            </div> */}
         </Wrap>
     )
 }
@@ -171,7 +171,8 @@ const Wrap = styled.div`
             }
         }
         .mint-left {
-            flex: 1;
+            width: 50%;
+            /* flex: 1; */
             gap: 20px;
             display: flex;
             .ml-img {

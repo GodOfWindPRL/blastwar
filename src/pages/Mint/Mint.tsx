@@ -12,9 +12,9 @@ const Mint = () => {
     const [stage, setStage] = useState<"bid" | "mint">("bid");
 
     useEffect(() => {
-        setTimeout(() => {
-            setStage("mint")
-        }, 5000)
+        // setTimeout(() => {
+        //     setStage("mint")
+        // }, 5000)
     }, [])
 
     return (
