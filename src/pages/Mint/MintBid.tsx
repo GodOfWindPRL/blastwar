@@ -7,10 +7,7 @@ import { useTranslation } from "react-i18next";
 import Title from "components/core/Title";
 import configColor from "constants/configColor";
 import { useEffect, useMemo, useState } from "react";
-import { subStringAddress } from "helpers/format/subStringAddress";
-import numeral from "numeral";
 import { breakpointsMedias } from "constants/breakpoints";
-import { useWidthScreen } from "helpers/hooks/useScreen";
 import useTotalCommited from "helpers/contracts/useTotalCommited";
 import useBalanceNative from "helpers/contracts/useBalanceNative";
 import useWhitelistEndtime from "helpers/contracts/useWhitelistEndtime";
@@ -21,6 +18,7 @@ import usePublicEndtime from "helpers/contracts/usePublicEndtime";
 import usePublicCommit from "helpers/contracts/usePublicCommit";
 import useClaim from "helpers/contracts/useClaim";
 import { getAirdropPath } from "helpers/utils/get-airdrop-info";
+import { whitelist } from "helpers/utils/whitelist";
 
 type TopItem = {
     address: string,
@@ -42,9 +40,10 @@ const MintBid = () => {
     const { onClaim, isLoadingClaim } = useClaim();
 
     const [data, setData] = useState<TopItem[]>([]);
-    const isWhitelist = true
+    const isWhitelist = whitelist.includes(address || "")
 
     // console.log({ totalCommitted, balance, whitelistEnded })
+    // console.log({ isWhitelist })
 
     useEffect(() => {
         if (address && isConnected) {
