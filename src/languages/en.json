@@ -32,5 +32,12 @@
     "textBox": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
     "topBid": "Top Bid",
     "address": "Address",
-    "earned": "Earned"
+    "earned": "Earned",
+    "WhitelistCommit": "Whitelist commit",
+    "commit": "Commit",
+    "claim": "Claim",
+    "claimError": "Claim error",
+    "claimSuccess": "Claim successful",
+    "commitError": "Commit error",
+    "commitSuccess": "Commit success"
 }

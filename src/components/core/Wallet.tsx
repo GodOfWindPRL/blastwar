@@ -11,16 +11,21 @@ import { NetworkContext } from 'contexts/NetworkContext'
 import bgBtWallet from 'assets/images/bg-bt-wallet.png'
 import { PiWallet } from "react-icons/pi";
 import { breakpointsMedias } from 'constants/breakpoints'
+import useBalanceNative from 'helpers/contracts/useBalanceNative'
+import BigNumber from 'bignumber.js'
+import numeral from 'numeral'
 
 
 const Wallet = () => {
-    const { disconnect } = useDisconnect()
+    const { disconnect } = useDisconnect();
+
     //switch network
     const { chains } = useSwitchNetwork()
     const { t } = useTranslation()
     const { isBlast } = useContext(NetworkContext)
     const { open } = useWeb3Modal()
     const { isConnected, address } = useAccount()
+    const { balance } = useBalanceNative()
 
     return (
         <Wrap className='cursor-pointer'>
@@ -28,7 +33,7 @@ const Wallet = () => {
                 (isConnected) ?
                     !isBlast ?
                         <div className='flex items-center w-full gap-[16px] px-[20px]' onClick={() => disconnect()}>
-                            <AiOutlinePoweroff size={32} color='red' className='bt-dis'/>
+                            <AiOutlinePoweroff size={32} color='red' className='bt-dis' />
                             <div className='flex flex-col gap-[4px]'>
                                 <span className="text-1 color-red uppercase ">{t("wrongNetwork")}</span>
                                 <span className="text-3 color-red uppercase ">{`(${chains.length && chains[0].name})`}</span>
@@ -39,7 +44,11 @@ const Wallet = () => {
                             <div  >
                                 <img alt="network" className='w-[40px] h-[40px]' src={iconNetwork} />
                             </div>
-                            <span className='color-black text-3'> {subStringAddress(address)}</span>
+                            <div className='flex flex-col'>
+                                <span className='color-black text-3'>{subStringAddress(address)}</span>
+                                <span className='color-black text-2'>{numeral(BigNumber((balance as any).toString()).dividedBy(1e18).toString(10)).format("0,0.[0000]")} ETH</span>
+                            </div>
+
                         </div>
                     :
                     <div onClick={() => open()} className='flex items-center w-full gap-[16px] px-[24px]'>

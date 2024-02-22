@@ -2,24 +2,24 @@ import { ABI_SALE, CONTRACT_SALE } from 'environments'
 import { useMemo } from 'react'
 import { useContractRead } from 'wagmi'
 
-const useBidValue = (addr: string) => {
+const useTotalCommited = () => {
     const { data, isError, isSuccess, isLoading } = useContractRead({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
-        functionName: 'bidValue',
-        args: [addr],
+        functionName: 'totalCommitted',
+        args: [],
         watch: true
     })
-    const bidValue = useMemo(() => {
+    const totalCommitted = useMemo(() => {
         if (data) {
-            return Number(data)
+            return data
         }
-        return 0
+        return 0n
     }, [data, isSuccess]);
 
     // console.log(votePeriod)
 
-    return { bidValue, isLoading, isError, isSuccess }
+    return { totalCommitted, isLoading, isError, isSuccess }
 }
 
-export default useBidValue
+export default useTotalCommited

@@ -12,14 +12,19 @@ const useWhitelistEndtime = () => {
     })
     const whitelistEndtime = useMemo(() => {
         if (data) {
-            return Number(data)
+            return data
         }
-        return 0
+        return 0n
     }, [data, isSuccess]);
+
+    const ended = useMemo(() => {
+        let now = Date.now();
+        return BigInt(whitelistEndtime as any) <= BigInt(now)
+    }, [whitelistEndtime]);
 
     // console.log(votePeriod)
 
-    return { whitelistEndtime, isLoading, isError, isSuccess }
+    return { whitelistEndtime, isLoading, isError, isSuccess, ended }
 }
 
 export default useWhitelistEndtime

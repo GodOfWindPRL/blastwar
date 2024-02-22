@@ -30,10 +30,10 @@ const useClaim = () => {
 
     useEffect(() => {
         if (status === "error") {
-            notifyToastify("error", t("bidError"))
+            notifyToastify("error", t("claimError"))
         }
         if (status === "success") {
-            notifyToastify("success", t("bidSuccess"))
+            notifyToastify("success", t("claimSuccess"))
         }
     }, [status])
 

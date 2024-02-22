@@ -6,38 +6,69 @@ import Button from "components/core/Button";
 import { useTranslation } from "react-i18next";
 import Title from "components/core/Title";
 import configColor from "constants/configColor";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { subStringAddress } from "helpers/format/subStringAddress";
 import numeral from "numeral";
 import { breakpointsMedias } from "constants/breakpoints";
 import { useWidthScreen } from "helpers/hooks/useScreen";
+import useTotalCommited from "helpers/contracts/useTotalCommited";
+import useBalanceNative from "helpers/contracts/useBalanceNative";
+import useWhitelistEndtime from "helpers/contracts/useWhitelistEndtime";
+import useWhitelistCommit, { MINT_PRICE } from "helpers/contracts/useWhitelistCommit";
+import { useAccount } from "wagmi";
+import BigNumber from "bignumber.js";
+import usePublicEndtime from "helpers/contracts/usePublicEndtime";
+import usePublicCommit from "helpers/contracts/usePublicCommit";
+import useClaim from "helpers/contracts/useClaim";
+import { getAirdropPath } from "helpers/utils/get-airdrop-info";
 
 type TopItem = {
     address: string,
     amount: number
 }
 
+const MAX_SUPPLY = 5000
+
 const MintBid = () => {
     const { t } = useTranslation();
-    const { width } = useWidthScreen()
+    const { address, isConnected } = useAccount()
+    const { totalCommitted } = useTotalCommited();
+    const { ended: whitelistEnded } = useWhitelistEndtime();
+    const { publicEnded } = usePublicEndtime();
+    const { balance } = useBalanceNative();
+    const [path, setPath] = useState<string[]>([])
+    const { onCommit, isLoadingCommit } = useWhitelistCommit(path);
+    const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit } = usePublicCommit();
+    const { onClaim, isLoadingClaim } = useClaim();
 
-    const [data, setData] = useState<TopItem[]>([])
+    const [data, setData] = useState<TopItem[]>([]);
+    const isWhitelist = true
+
+    // console.log({ totalCommitted, balance, whitelistEnded })
 
     useEffect(() => {
-        getDataTop()
-    }, [])
-
-    const getDataTop = async () => {
-        let newData = [] as TopItem[]
-        for (let i = 0; i < 10; i++) {
-            let amount = Math.random() * 2131;
-            newData.push({
-                address: "FDF#$YTGV23423tgfdhgb",
-                amount: amount
-            })
+        if (address && isConnected) {
+            getPath()
         }
-        setData(newData);
+    }, [address, isConnected]);
+
+    const getPath = async () => {
+        let newPath = await getAirdropPath(address) as string[];
+        setPath(newPath)
     }
+
+    const errBalance = useMemo(() => {
+        return balance < BigInt(BigNumber(MINT_PRICE).multipliedBy(1e18).toString(10))
+    }, [balance])
+
+    const onClickCommit = () => {
+        if (!whitelistEnded) {
+            onCommit()
+        } else if (!publicEnded) {
+            onPublicCommit()
+        }
+    }
+
 
     return (
         <Wrap className="">
@@ -51,9 +82,39 @@ const MintBid = () => {
                 <div className="ml-content flex flex-col">
                     <Title className="!w-[fit-content]" classText="text-4 uppercase" text={t("titleBox")} borderLeft />
                     <span className="mlc-text text-2 color-white">{t("textBox")}</span>
+                    {publicEnded ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
+                        : <>
+                            <span className="text-3 color-yellow mt-[20px]">Mint price: {MINT_PRICE} ETH</span>
+                            <div className="flex flex-col w-full gap-[6px]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-2 color-green mt-[20px]">Total committed</span>
+                                    <span className="text-2 color-green mt-[20px]">{Number(totalCommitted)} / {MAX_SUPPLY}</span>
+                                </div>
+                                <div className={`pr-bar w-full h-[10px] rounded-[8px] border-[1px]`}>
+                                    <div style={{
+                                        width: `${(Number(totalCommitted) / MAX_SUPPLY) * 100}%`
+                                    }}></div>
+                                </div>
+                            </div>
+                        </>}
                     <div className="mlc-bt">
-                        <Button text={t("placeBids")} typeBt="yellow" />
+                        {!publicEnded ? <Button
+                            text={t(whitelistEnded ? "commit" : "WhitelistCommit")}
+                            typeBt="yellow"
+                            isLoading={isLoadingCommit || isLoadingPublicCommit}
+                            disabled={(!isWhitelist && !whitelistEnded) || !(address && isConnected) || errBalance}
+                            onClick={onClickCommit}
+                        /> : <Button
+                            text={t("claim")}
+                            typeBt="yellow"
+                            isLoading={isLoadingClaim}
+                            disabled={!(address && isConnected)}
+                            onClick={onClaim}
+                        />}
                     </div>
+                    {!isWhitelist ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not on the whitelist</span>
+                        : (errBalance && !publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
+                            : null}
                 </div>
             </div>
             {/* <div className="mint-right">
@@ -171,7 +232,8 @@ const Wrap = styled.div`
             }
         }
         .mint-left {
-            width: 50%;
+            width: 80%;
+            max-width: 1000px;
             /* flex: 1; */
             gap: 20px;
             display: flex;
@@ -241,6 +303,16 @@ const Wrap = styled.div`
                 }
             }
         }
+        .pr-bar {
+            display: flex;
+            /* border: 1px solid ${configColor.green}; */
+            > div {
+                height: 100%;
+                transition: 0.5s ease-in-out;
+                border-radius: 10px;
+                background: ${configColor.green};
+            }
+        }
     ${breakpointsMedias.max1599} {
         gap: 4%;
         .mint-right {
@@ -275,6 +347,7 @@ const Wrap = styled.div`
             }
         }
         .mint-left {
+            width: 100%;
             ${breakpointsMedias.max767} {
                 width: 100%;
                 flex-direction: column;
@@ -292,6 +365,12 @@ const Wrap = styled.div`
                         margin: 0 auto;
                         margin-top: 20px;
                     }
+                }
+                .text-err {
+                    margin: 10px auto;
+                }
+                .end-sale {
+                    text-align: center;
                 }
             }
         }

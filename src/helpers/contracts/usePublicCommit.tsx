@@ -2,23 +2,25 @@ import { ABI_SALE, CONTRACT_SALE } from 'environments'
 import { notifyToastify } from 'helpers/notifyToastify'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { parseEther } from 'viem'
 import { useContractWrite, useWaitForTransaction } from 'wagmi'
+import { MINT_PRICE } from './useWhitelistCommit'
 
-const useBid = (e: bigint) => {
+const usePublicCommit = () => {
     const { t } = useTranslation()
     const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
-        functionName: 'bid',
+        functionName: 'publicCommit',
         args: [],
-        value: e
+        value: parseEther(MINT_PRICE)
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,
         hash: data?.hash
     })
 
-    const onBid = () => {
+    const onCommit = () => {
         try {
             if (!write) {
                 return;
@@ -31,14 +33,14 @@ const useBid = (e: bigint) => {
 
     useEffect(() => {
         if (status === "error") {
-            notifyToastify("error", t("bidError"))
+            notifyToastify("error", t("commitError"))
         }
         if (status === "success") {
-            notifyToastify("success", t("bidSuccess"))
+            notifyToastify("success", t("commitSuccess"))
         }
     }, [status])
 
-    return { onBid, isLoadingBid: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
+    return { onCommit, isLoadingCommit: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
 }
 
-export default useBid
+export default usePublicCommit

@@ -12,14 +12,17 @@ const usePublicEndtime = () => {
     })
     const publicEndTime = useMemo(() => {
         if (data) {
-            return Number(data)
+            return data
         }
-        return 0
+        return 0n
     }, [data, isSuccess]);
 
-    // console.log(votePeriod)
+    const ended = useMemo(() => {
+        let now = Date.now();
+        return BigInt(publicEndTime as any) <= BigInt(now)
+    }, [publicEndTime]);
 
-    return { publicEndTime, isLoading, isError, isSuccess }
+    return { publicEndTime, isLoading, isError, isSuccess, publicEnded: ended }
 }
 
 export default usePublicEndtime
