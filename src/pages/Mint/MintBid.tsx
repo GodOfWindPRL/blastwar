@@ -19,6 +19,8 @@ import usePublicCommit from "helpers/contracts/usePublicCommit";
 import useClaim from "helpers/contracts/useClaim";
 import { getAirdropPath } from "helpers/utils/get-airdrop-info";
 import { whitelist } from "helpers/utils/whitelist";
+import useCommited from "helpers/contracts/useCommited";
+import useClaimed from "helpers/contracts/useClaimed";
 
 type TopItem = {
     address: string,
@@ -29,18 +31,26 @@ const MAX_SUPPLY = 5000
 
 const MintBid = () => {
     const { t } = useTranslation();
-    const { address, isConnected } = useAccount()
-    const { totalCommitted } = useTotalCommited();
-    const { ended: whitelistEnded } = useWhitelistEndtime();
-    const { publicEnded } = usePublicEndtime();
-    const { balance } = useBalanceNative();
-    const [path, setPath] = useState<string[]>([])
-    const { onCommit, isLoadingCommit } = useWhitelistCommit(path);
-    const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit } = usePublicCommit();
-    const { onClaim, isLoadingClaim } = useClaim();
+    const { address, isConnected } = useAccount();
+    const [path, setPath] = useState<string[]>([]);
+    // const [data, setData] = useState<TopItem[]>([]);
 
-    const [data, setData] = useState<TopItem[]>([]);
+    const { totalCommitted } = useTotalCommited();
+    const { ended: whitelistEnded, started } = useWhitelistEndtime();
+    const { publicEnded } = usePublicEndtime();
+    const { wlCommited, plCommited } = useCommited();
+    const { isClaimed } = useClaimed();
+    const { balance } = useBalanceNative();
+    const { onCommit, isLoadingCommit, isSuccess: wlCommitSuccess } = useWhitelistCommit(path);
+    const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit, isSuccess: plCommitSuccess } = usePublicCommit();
+    const { onClaim, isLoadingClaim, isSuccess: isClaimSuccess } = useClaim();
     const isWhitelist = whitelist.includes(address || "")
+
+
+
+
+
+
 
     // console.log({ totalCommitted, balance, whitelistEnded })
     // console.log({ isWhitelist })
@@ -59,6 +69,19 @@ const MintBid = () => {
     const errBalance = useMemo(() => {
         return balance < BigInt(BigNumber(MINT_PRICE).multipliedBy(1e18).toString(10))
     }, [balance])
+
+    const isCommitted = useMemo(() => {
+        if (started) {
+            if (!whitelistEnded) {
+                return wlCommited || wlCommitSuccess
+            }
+            if (!publicEnded) {
+                return plCommited || plCommitSuccess
+            }
+            return wlCommited || plCommited
+        }
+        return false
+    }, [wlCommited, plCommited, whitelistEnded, started, publicEnded, wlCommitSuccess, plCommitSuccess])
 
     const onClickCommit = () => {
         if (!whitelistEnded) {
@@ -82,8 +105,9 @@ const MintBid = () => {
                     <Title className="!w-[fit-content]" classText="text-4 uppercase" text={t("titleBox")} borderLeft />
                     <span className="mlc-text text-2 color-white">{t("textBox")}</span>
                     {publicEnded ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
-                        : <>
-                            <span className="text-3 color-yellow mt-[20px]">Mint price: {MINT_PRICE} ETH</span>
+                        : started ? <>
+                            <span className="text-4 mt-[20px]">{whitelistEnded ? "Public" : "Whitelist"} Round</span>
+                            <span className="text-3 color-yellow ">Mint price: {MINT_PRICE} ETH</span>
                             <div className="flex flex-col w-full gap-[6px]">
                                 <div className="flex items-center justify-between">
                                     <span className="text-2 color-green mt-[20px]">Total committed</span>
@@ -95,25 +119,28 @@ const MintBid = () => {
                                     }}></div>
                                 </div>
                             </div>
-                        </>}
+                        </> : <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Whitelist Round has not started yet</span>}
                     <div className="mlc-bt">
                         {!publicEnded ? <Button
                             text={t(whitelistEnded ? "commit" : "WhitelistCommit")}
                             typeBt="yellow"
                             isLoading={isLoadingCommit || isLoadingPublicCommit}
-                            disabled={(!isWhitelist && !whitelistEnded) || !(address && isConnected) || errBalance}
+                            disabled={(!isWhitelist && !whitelistEnded) || !(address && isConnected) || errBalance || !started || isCommitted}
                             onClick={onClickCommit}
                         /> : <Button
                             text={t("claim")}
                             typeBt="yellow"
                             isLoading={isLoadingClaim}
-                            disabled={!(address && isConnected)}
+                            disabled={!(address && isConnected) || (isClaimed || isClaimSuccess) || (!isClaimed && !isCommitted) || isLoadingClaim}
                             onClick={onClaim}
                         />}
                     </div>
-                    {!isWhitelist ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not on the whitelist</span>
+                    {!isWhitelist ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not whitelist</span>
                         : (errBalance && !publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
-                            : null}
+                            : (isCommitted && !publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already committed</span>
+                                : ((isClaimed || isClaimSuccess) && publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already claimed</span>
+                                    : (!(isClaimed || isClaimSuccess) && publicEnded && !isCommitted) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Nothing to claim</span>
+                                        : null}
                 </div>
             </div>
             {/* <div className="mint-right">

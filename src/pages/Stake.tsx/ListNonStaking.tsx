@@ -83,6 +83,9 @@ const Wrap = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
+    .sl-tt {
+        display: none;
+    }
     .stake-list {
         flex: 1;
         width: 100%;
@@ -157,6 +160,7 @@ const Wrap = styled.div`
         }
     }
     ${breakpointsMedias.max490} {
+        height: fit-content;
         .sl-tt {
             display: flex;
             width: fit-content;

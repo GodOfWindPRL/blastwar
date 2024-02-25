@@ -11,6 +11,7 @@ const usePublicEndtime = () => {
         watch: false
     })
     const publicEndTime = useMemo(() => {
+        console.log({ data, now: Date.now() })
         if (data) {
             return data
         }
@@ -19,7 +20,7 @@ const usePublicEndtime = () => {
 
     const ended = useMemo(() => {
         let now = Date.now();
-        return BigInt(publicEndTime as any) <= BigInt(now)
+        return BigInt(publicEndTime as any) * 1000n <= BigInt(now)
     }, [publicEndTime]);
 
     return { publicEndTime, isLoading, isError, isSuccess, publicEnded: ended }

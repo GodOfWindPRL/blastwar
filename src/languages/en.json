@@ -39,5 +39,11 @@
     "claimError": "Claim error",
     "claimSuccess": "Claim successful",
     "commitError": "Commit error",
-    "commitSuccess": "Commit success"
+    "commitSuccess": "Commit success",
+    "approveError": "Approve error",
+    "approveSuccess": "Approve success",
+    "stakeError": "Stake error",
+    "stakeSuccess": "Stake success",
+    "withdrawError": "Withdraw error",
+    "withdrawSuccess": "Withdraw success"
 }
