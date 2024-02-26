@@ -11,7 +11,7 @@ const useWhitelistEndtime = () => {
         watch: false
     })
     const whitelistEndtime = useMemo(() => {
-        console.log(data)
+        // console.log(data)
         if (data) {
             return data
         }

@@ -46,13 +46,13 @@ const useClaimReward = () => {
 
     const earnedHuman = useMemo(() => {
         if (dataHuman) {
-            return dataHuman
+            return dataHuman as bigint
         }
         return 0n
     }, [dataHuman, isSuccessHuman]);
     const earnedMonster = useMemo(() => {
         if (dataMonster) {
-            return dataMonster
+            return dataMonster as bigint
         }
         return 0n
     }, [dataMonster, isSuccessMonster]);

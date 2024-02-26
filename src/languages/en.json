@@ -39,11 +39,15 @@
     "claimError": "Claim error",
     "claimSuccess": "Claim successful",
     "commitError": "Commit error",
-    "commitSuccess": "Commit success",
+    "commitSuccess": "Commit successful",
     "approveError": "Approve error",
-    "approveSuccess": "Approve success",
+    "approveSuccess": "Approve successful",
     "stakeError": "Stake error",
-    "stakeSuccess": "Stake success",
+    "stakeSuccess": "Stake successful",
     "withdrawError": "Withdraw error",
-    "withdrawSuccess": "Withdraw success"
+    "withdrawSuccess": "Withdraw successful",
+    "claimHumanRewardError": "Claim Human Reward error",
+    "claimHumanRewardSuccess": "Claim Human Reward successful",
+    "claimMonsterRewardError": "Claim Monster Reward error",
+    "claimMonsterRewardSuccess": "Claim Monster Reward successful"
 }

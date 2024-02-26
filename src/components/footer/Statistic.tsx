@@ -6,33 +6,36 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import numeral from 'numeral';
 import { breakpointsMedias } from 'constants/breakpoints';
+import useTotalStake from 'helpers/contracts/useTotalStake';
+
+const MAX_SUPPLY_TOKEN = 1000000000
 
 const Statistic = () => {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
+    const { totalStakeHuman, totalStakeMonster } = useTotalStake()
+
     const [data, setData] = useState({
-        humanStaked: 1235423,
-        monsterStaked: 68122,
-        claimed: 3248241,
-        mcap: 24545433633,
+        claimed: null,
+        mcap: null,
     })
 
     return (
         <Wrap className='statistic'>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("humanStaked")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(data.humanStaked).format(data.humanStaked >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(totalStakeHuman.toString()).format(totalStakeHuman >= BigInt(1e6) ? "0a,0.[00]" : "0,0")}</span>
             </div>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("monsterStaked")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(data.monsterStaked).format(data.monsterStaked >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(totalStakeMonster.toString()).format(totalStakeMonster >= BigInt(1e6) ? "0a,0.[00]" : "0,0")}</span>
             </div>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("warClaimed")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(data.claimed).format(data.claimed >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(data.claimed).format((data.claimed || 0) >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
             </div>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("mcap")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(data.mcap).format(data.mcap >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(data.mcap).format((data.mcap || 0) >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
             </div>
         </Wrap>
     )
@@ -53,7 +56,7 @@ const Wrap = styled.div`
     max-width: 265px;
     gap: 20px;
    .statis-item {
-        padding: 0 24px;
+        padding: 0 12px;
         height: 94px;
         display: flex;
         align-items: center;
@@ -62,6 +65,7 @@ const Wrap = styled.div`
         background-color:#FDEC0B4D;
         display: flex;
         flex-direction: column;
+        min-width: 155px;
         &::before {
             content: "";
             position: absolute;

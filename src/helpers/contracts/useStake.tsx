@@ -10,7 +10,7 @@ const useStake = (list: number[], type: "human" | "monster") => {
         address: type === "human" ? CONTRACT_HUMAN_STAKING : CONTRACT_MONSTER_STAKING,
         abi: type === "human" ? ABI_HUMAN_STAKING : ABI_MONSTER_STAKING,
         functionName: 'stake',
-        args: [list],
+        args: [list.map(item => item.toString())],
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,

@@ -19,3 +19,8 @@ export function formatNumber(number: BigNumber.Value, decimal: number = 1e18) {
     : 0;
   return format;
 }
+
+export function formatDataNormal(e: bigint, format?: string) {
+  return BigNumber(e.toString()).dividedBy(1e18).toString(10);
+}
+

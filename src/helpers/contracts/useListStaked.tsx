@@ -5,8 +5,8 @@ import { useAccount, useContractRead } from 'wagmi'
 const useListStaked = () => {
     const { address } = useAccount();
     const { data: dataHuman, isSuccess: isSuccessHuman } = useContractRead({
-        address: CONTRACT_HUMAN_STAKING ,
-        abi:ABI_HUMAN_STAKING,
+        address: CONTRACT_HUMAN_STAKING,
+        abi: ABI_HUMAN_STAKING,
         functionName: 'getPosition',
         args: [address || ""],
         watch: true
@@ -20,13 +20,13 @@ const useListStaked = () => {
     })
     const listStakedHuman = useMemo(() => {
         if (dataHuman) {
-            return dataHuman
+            return dataHuman as number[]
         }
         return []
     }, [dataHuman, isSuccessHuman]);
     const listStakedMonster = useMemo(() => {
         if (dataMonster) {
-            return dataMonster
+            return dataMonster as number[]
         }
         return []
     }, [dataMonster, isSuccessMonster]);

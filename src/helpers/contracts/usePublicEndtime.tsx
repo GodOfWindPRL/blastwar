@@ -11,7 +11,7 @@ const usePublicEndtime = () => {
         watch: false
     })
     const publicEndTime = useMemo(() => {
-        console.log({ data, now: Date.now() })
+        // console.log({ data, now: Date.now() })
         if (data) {
             return data
         }

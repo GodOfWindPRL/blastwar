@@ -1,94 +1,128 @@
 import styled from "styled-components";
-import imgBox from "assets/images/mint-box.png";
-import gifBox from "assets/images/mint.gif";
-import iconBox from "assets/images/box.png";
-import Button from "components/core/Button";
 import { useTranslation } from "react-i18next";
 import Title from "components/core/Title";
-import configColor from "constants/configColor";
-import { useEffect, useState } from "react";
-import { subStringAddress } from "helpers/format/subStringAddress";
+import { useEffect, useMemo, useState } from "react";
 import numeral from "numeral";
 import ListStaking from "./ListStaking";
 import ListNonStaking from "./ListNonStaking";
 import { breakpointsMedias } from "constants/breakpoints";
-
-type TopItem = {
-    address: string,
-    amount: number
-}
+import useListStaked from "helpers/contracts/useListStaked";
+import { useAccount } from "wagmi";
+import { notifyToastify } from "helpers/notifyToastify";
+import useClaimReward from "helpers/contracts/useClaimReward";
+import BigNumber from "bignumber.js";
+import Button from "components/core/Button";
 
 interface ISM {
     onShowBoard: () => void
 }
 
+type ListNon = number[]
+type DataStake = {
+    earnPerDay: number | null,
+    tokenStealed: number | null,
+    humanStealed: number | null,
+}
+
 const StakeMain = ({ onShowBoard }: ISM) => {
     const { t } = useTranslation();
-    const [tab, setTab] = useState<"nonStaking" | "staking">("staking")
+    const { address, isConnected } = useAccount()
+    const [tab, setTab] = useState<"nonStaking" | "staking">("staking");
+    const { listStakedHuman, listStakedMonster } = useListStaked();
+    const { earnedHuman, earnedMonster, onClaimReward, isLoadingClaimReward } = useClaimReward();
+    const [listNonStake, setListNonStake] = useState<ListNon>([])
 
-    const [data, setData] = useState({
-        earnPerDay: 435345,
-        earned: 7686,
-        tokenStealed: 12479,
-        humanStealed: 9523,
-        staked: 47,
-        nonStake: 823
+    const [data, setData] = useState<DataStake>({
+        earnPerDay: null,
+        tokenStealed: null,
+        humanStealed: null,
     })
+
+    const getNonStake = async () => {
+        try {
+            const dataFetch = await fetch(`https://api.routescan.io/v2/network/testnet/evm/168587773/address/${address}/erc721-holdings`);
+            const newList = await dataFetch.json();
+            // console.log({ newList });
+            setListNonStake(newList.items.map((item: any) => Number(item.tokenId)))
+        } catch (error) {
+            notifyToastify("error", "Get data NFT error.")
+        }
+    }
+
+    useEffect(() => {
+        if (address && isConnected) {
+            getNonStake()
+        }
+    }, [address, isConnected, tab])
+
+    const listStaking = useMemo(() => {
+        return [...listStakedHuman, ...listStakedMonster].sort();
+    }, [])
 
     return (
         <Wrap className="">
             <div className="stake-left">
-                <Title classText="text-4 uppercase" text={t("stakingStats")} borderLeft borderRight />
-                <div className="sl-table">
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">$WAR {t("earnPerDay")}</span>
+                <div className="sl-wrap">
+                    <Title classText="text-4 uppercase" text={t("stakingStats")} borderLeft borderRight />
+                    <div className="sl-table scrollbar overflow-auto">
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">$WAR {t("earnPerDay")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{data.earnPerDay === null ? "--" : numeral(data.earnPerDay).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                            </div>
                         </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.earnPerDay).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">{t("yourWarEarned")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{numeral(BigNumber((earnedHuman + earnedMonster).toString()).dividedBy(1e18).toString(10)).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">{t("yourWarEarned")}</span>
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">$WAR {t("stealed")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{data.tokenStealed === null ? "--" : numeral(data.tokenStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                            </div>
                         </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.earned).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">{t("humanStealed")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{data.humanStealed === null ? "--" : numeral(data.humanStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">$WAR {t("stealed")}</span>
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">{t("nftStaked")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{numeral(listStakedHuman.length + listStakedMonster.length).format("0,0.[00]")}</span>
+                            </div>
                         </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.tokenStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
-                        </div>
-                    </div>
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">{t("humanStealed")}</span>
-                        </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.humanStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
-                        </div>
-                    </div>
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">{t("nftStaked")}</span>
-                        </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.staked).format("0,0.[00]")}</span>
-                        </div>
-                    </div>
-                    <div className="slt-row">
-                        <div className="slt-col-1">
-                            <span className="text-2 color-green">{t("nonStake")}</span>
-                        </div>
-                        <div className="slt-col-2">
-                            <span className="uppercase text-22 color-green">{numeral(data.nonStake).format("0,0.[00]")}</span>
+                        <div className="slt-row">
+                            <div className="slt-col-1">
+                                <span className="text-2 color-green">{t("nonStake")}</span>
+                            </div>
+                            <div className="slt-col-2">
+                                <span className="uppercase text-22 color-green">{numeral(listNonStake.length).format("0,0.[00]")}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <Button
+                    typeBt="yellow"
+                    text="Claim Reward"
+                    onClick={onClaimReward}
+                    isLoading={isLoadingClaimReward}
+                    disabled={(earnedHuman + earnedMonster) === 0n}
+                    className="max-w-[220px] mx-auto"
+                />
             </div>
             <div className="stake-right">
                 <div className="sr-tabs cursor-pointer">
@@ -109,14 +143,14 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                         variant="red"
                         onClick={() => { setTab("nonStaking") }}
                     />
-                    <span className="text-3 color-yellow uppercase" onClick={onShowBoard}>{t("leaderboard")}</span>
+                    {/* <span className="text-3 color-yellow uppercase" onClick={onShowBoard}>{t("leaderboard")}</span> */}
                 </div>
                 <div className={`sr-list`}>
-                    {tab === "staking" ? <ListStaking /> : <ListNonStaking />}
+                    {tab === "staking" ? <ListStaking data={listStaking} /> : <ListNonStaking data={listNonStake} reload={getNonStake} />}
                 </div>
                 <div className={`sr-list-2`}>
-                    <ListStaking />
-                    <ListNonStaking />
+                    <ListStaking data={listStaking} />
+                    <ListNonStaking data={listNonStake} reload={getNonStake} />
                 </div>
             </div>
         </Wrap>
@@ -133,14 +167,23 @@ const Wrap = styled.div`
     align-items: center;
         .stake-left {
             display: flex;
-            max-height: 100%;
+            max-height: calc(100% - 50px);
             height: fit-content;
             width: 30%;
             min-width: 400px;
             overflow: hidden;
             flex-direction: column;
-            background: rgba(0, 255, 163, 0.2);
             margin-bottom: 30px;
+            margin-bottom: 20px;
+            .sl-wrap {
+                display: flex;
+                height: fit-content;
+                width: 100%;
+                overflow: hidden;
+                flex-direction: column;
+                background: rgba(0, 255, 163, 0.2);
+                margin-bottom: 20px;
+            }
             .sl-table {
                 margin-top: 16px;
                 height: fit-content;
@@ -217,6 +260,10 @@ const Wrap = styled.div`
             min-width: unset;
             max-width: 600px;
             margin-bottom: 10px;
+            .sl-table {
+                height: fit-content;
+                overflow: hidden;
+            }
         }
         .stake-right {
             flex: unset;
