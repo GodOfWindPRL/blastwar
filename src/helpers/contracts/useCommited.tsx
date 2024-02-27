@@ -19,7 +19,6 @@ const useCommited = () => {
         watch: true
     })
     const wlCommited = useMemo(() => {
-        console.log({ wlCommited: data })
         if (data) {
             return true
         }

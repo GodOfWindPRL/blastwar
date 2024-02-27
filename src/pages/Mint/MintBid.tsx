@@ -18,14 +18,10 @@ import usePublicEndtime from "helpers/contracts/usePublicEndtime";
 import usePublicCommit from "helpers/contracts/usePublicCommit";
 import useClaim from "helpers/contracts/useClaim";
 import { getAirdropPath } from "helpers/utils/get-airdrop-info";
-import { whitelist } from "helpers/utils/whitelist";
 import useCommited from "helpers/contracts/useCommited";
 import useClaimed from "helpers/contracts/useClaimed";
-
-type TopItem = {
-    address: string,
-    amount: number
-}
+import { loadWhitelist } from "helpers/loadWhitelist";
+import { whitelist } from "whitelist";
 
 const MAX_SUPPLY = 5000
 
@@ -44,26 +40,18 @@ const MintBid = () => {
     const { onCommit, isLoadingCommit, isSuccess: wlCommitSuccess } = useWhitelistCommit(path);
     const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit, isSuccess: plCommitSuccess } = usePublicCommit();
     const { onClaim, isLoadingClaim, isSuccess: isClaimSuccess } = useClaim();
-    const isWhitelist = whitelist.includes(address || "")
-
-
-
-
-
-
-
-    // console.log({ totalCommitted, balance, whitelistEnded })
-    // console.log({ isWhitelist })
+    const isWhitelist = loadWhitelist(whitelist).includes(address || "")
 
     useEffect(() => {
         if (address && isConnected) {
-            getPath()
+            getPath();
         }
     }, [address, isConnected]);
 
     const getPath = async () => {
         let newPath = await getAirdropPath(address) as string[];
-        setPath(newPath)
+        setPath(newPath);
+        // console.log(newPath)
     }
 
     const errBalance = useMemo(() => {

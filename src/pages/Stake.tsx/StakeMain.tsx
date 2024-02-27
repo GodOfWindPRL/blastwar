@@ -12,6 +12,7 @@ import { notifyToastify } from "helpers/notifyToastify";
 import useClaimReward from "helpers/contracts/useClaimReward";
 import BigNumber from "bignumber.js";
 import Button from "components/core/Button";
+import { CONTRACT_NFT } from "environments";
 
 interface ISM {
     onShowBoard: () => void
@@ -42,8 +43,12 @@ const StakeMain = ({ onShowBoard }: ISM) => {
         try {
             const dataFetch = await fetch(`https://api.routescan.io/v2/network/testnet/evm/168587773/address/${address}/erc721-holdings`);
             const newList = await dataFetch.json();
-            // console.log({ newList });
-            setListNonStake(newList.items.map((item: any) => Number(item.tokenId)))
+
+            const newListBlast = newList.items.filter((item: any) => {
+                return item.tokenAddress === CONTRACT_NFT
+            })
+            // console.log({ newListBlast });
+            setListNonStake(newListBlast.map((item: any) => Number(item.tokenId)))
         } catch (error) {
             notifyToastify("error", "Get data NFT error.")
         }

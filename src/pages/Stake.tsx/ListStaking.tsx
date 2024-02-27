@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import Button from "components/core/Button";
-import { useAccount } from "wagmi";
 import imgHero from "assets/images/img-hero.png"
 import imgMonster from "assets/images/img-monster.png"
 import gifBox from "assets/images/mint.gif";
@@ -68,6 +67,7 @@ const ListStaking = ({ data }: IList) => {
                         <div className={`sli-check ${((typePicked === "monster" && item < 1500) || (typePicked === "human" && item >= 1500)) && "sli-check-active"}`}>
                             {listPicked.includes(item) && <FaCheck color={configColor.green} />}
                         </div>
+                        <div className="sli-id color-white text-22">#{Number(item)}</div>
                     </div>
                 </div>)}
             </div>
@@ -171,6 +171,16 @@ const Wrap = styled.div`
                 border: 1px solid ${configColor.green};
                 align-items: center;
                 justify-content: center;
+            }
+            .sli-id {
+                position: absolute;
+                bottom: 2px;
+                left: 2px;
+                width: fit-content;
+                height: fit-content;
+                padding: 2px 6px 0 6px;
+                background-color: #00ffa269;
+                border-radius: 0 10px 0 10px;
             }
             .sli-check-active {
                 display: flex;

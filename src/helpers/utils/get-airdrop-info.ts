@@ -1,17 +1,18 @@
+import { whitelist } from "whitelist";
 import { genRootHash, getMerklePath } from "./merkleTree";
-import { whitelist } from "./whitelist";
+import { loadWhitelist } from "helpers/loadWhitelist";
 
 export const getAirdropPath = async (address: any) => {
   // Generate Merkle Tree
-  genRootHash(whitelist);
+  genRootHash(loadWhitelist(whitelist));
 
   // Get path
   let path = getMerklePath(address);
-  console.log(`Airdrop path for address ${address}: ${path}`);
+  // console.log(`Airdrop path for address ${address}: ${path}`);
   return path;
 };
 
-getAirdropPath("0x5B38Da6a701c568545dCfcB03FcB875f56beddC4");
+// getAirdropPath("0x5B38Da6a701c568545dCfcB03FcB875f56beddC4");
 
 // 0x43e538d0a390c77a6f119dad6491fbf7da0520ad702c2020f386e1de980386c7
 

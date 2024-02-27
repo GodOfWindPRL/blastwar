@@ -1,4 +1,4 @@
-import { ABI_HUMAN_STAKING, ABI_MONSTER_STAKING, ABI_SALE, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING, CONTRACT_SALE } from 'environments'
+import { ABI_HUMAN_STAKING, ABI_MONSTER_STAKING, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING } from 'environments'
 import { notifyToastify } from 'helpers/notifyToastify'
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,13 +23,13 @@ const useClaimReward = () => {
         watch: true
     })
 
-    const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
+    const { write, isLoading, isSuccess, data } = useContractWrite({
         address: CONTRACT_HUMAN_STAKING,
         abi: ABI_HUMAN_STAKING,
         functionName: 'getReward',
         args: [],
     })
-    const { write: write2, isLoading: isLoading2, isSuccess: isSuccess2, isError: isError2, data: data2, error: error2 } = useContractWrite({
+    const { write: write2, isLoading: isLoading2, isSuccess: isSuccess2, data: data2 } = useContractWrite({
         address: CONTRACT_MONSTER_STAKING,
         abi: ABI_MONSTER_STAKING,
         functionName: 'getReward',
@@ -92,7 +92,7 @@ const useClaimReward = () => {
         }
     }, [status2])
 
-    return { earnedHuman, earnedMonster, onClaimReward, isLoadingClaimReward: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
+    return { earnedHuman, earnedMonster, onClaimReward, isLoadingClaimReward: isLoading || (isSuccess && status === "loading") || isLoading2 || (isSuccess2 && status2 === "loading"), isSuccess: status === "success" }
 }
 
 export default useClaimReward

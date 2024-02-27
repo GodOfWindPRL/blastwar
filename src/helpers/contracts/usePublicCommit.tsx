@@ -8,7 +8,7 @@ import { MINT_PRICE } from './useWhitelistCommit'
 
 const usePublicCommit = () => {
     const { t } = useTranslation()
-    const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
+    const { write, isLoading, isSuccess, isError, data } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
         functionName: 'publicCommit',

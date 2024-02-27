@@ -1,4 +1,4 @@
-import { ABI_HUMAN_STAKING, ABI_MONSTER_STAKING, ABI_NFT, ABI_SALE, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING, CONTRACT_NFT, CONTRACT_SALE } from 'environments'
+import { ABI_HUMAN_STAKING, ABI_MONSTER_STAKING, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING } from 'environments'
 import { notifyToastify } from 'helpers/notifyToastify'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'

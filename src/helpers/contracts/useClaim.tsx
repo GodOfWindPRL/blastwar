@@ -6,7 +6,7 @@ import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
 const useClaim = () => {
     const { t } = useTranslation()
-    const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
+    const { write, isLoading, isSuccess, isError, data } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
         functionName: 'claim',

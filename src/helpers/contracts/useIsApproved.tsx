@@ -1,4 +1,4 @@
-import { ABI_NFT, ABI_SALE, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING, CONTRACT_NFT, CONTRACT_SALE } from 'environments'
+import { ABI_NFT, CONTRACT_HUMAN_STAKING, CONTRACT_MONSTER_STAKING, CONTRACT_NFT } from 'environments'
 import { useMemo } from 'react'
 import { useAccount, useContractRead } from 'wagmi'
 
