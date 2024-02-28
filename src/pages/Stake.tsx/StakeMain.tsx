@@ -178,8 +178,10 @@ const Wrap = styled.div`
             min-width: 400px;
             overflow: hidden;
             flex-direction: column;
-            margin-bottom: 30px;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            ${breakpointsMedias.max1199} {
+                margin-bottom: 20px;
+            }
             .sl-wrap {
                 display: flex;
                 height: fit-content;
