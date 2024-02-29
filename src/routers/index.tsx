@@ -2,6 +2,7 @@ import LoadingScreen from "components/core/LoadingScreen";
 import Home from "pages/Home/Home";
 import Mint from "pages/Mint/Mint";
 import Stake from "pages/Stake.tsx/Stake";
+import SubmitForm from "pages/Submit/SubmitForm";
 import { Suspense } from "react";
 import {
   useRoutes
@@ -21,7 +22,11 @@ export default function Routers() {
     },
     {
       path: "/stake",
-      element:  <Stake />,
+      element: <Stake />,
+    },
+    {
+      path: "/submit",
+      element: <SubmitForm />,
     },
   ]);
   // useEffect(() => {
