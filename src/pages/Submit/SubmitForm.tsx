@@ -8,9 +8,8 @@ import Button from "components/core/Button";
 import configColor from "constants/configColor";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useWidthScreen } from "helpers/hooks/useScreen";
-
-const BLAST_TWITTER = "/"
-const BLAST_TWEET = "123123123"
+import { LINK_GG_SHEET, RETWEET_ID, TWITTER_USERNAME } from "environments";
+import { notifyToastify } from "helpers/notifyToastify";
 
 const SubmitForm = () => {
     const { address, isConnected } = useAccount();
@@ -26,9 +25,9 @@ const SubmitForm = () => {
         follow: false as false | number,
         retweet: false as false | number
     })
+    const [isSubmitted, setIsSubmitted] = useState(false)
 
     const onClickBt1 = () => {
-        console.log("bt1")
         setLoading((prev) => {
             return {
                 ...prev,
@@ -69,9 +68,21 @@ const SubmitForm = () => {
         }
     }, [loading])
 
-    const onSubmit = (e: any) => {
+    const onSubmit = async (e: any) => {
         e.preventDefault();
-        console.log("SSSSS")
+        try {
+            const sendSubmit = await fetch(`${LINK_GG_SHEET}?wallet=${address}&twitter=${data.twitter}&desc=${data.desc}`);
+            const res = await sendSubmit.json();
+            if (res.result === "success") {
+                notifyToastify("success", "Submit successful.");
+                setIsSubmitted(true)
+            } else {
+                notifyToastify("error", "Submit failed.")
+            }
+        } catch (error: any) {
+            notifyToastify("error", error?.message || (typeof error === "string" ? error : "Submit failed."))
+        }
+
     }
 
     return (
@@ -113,7 +124,7 @@ const SubmitForm = () => {
                 <div className="flex items-center justify-between w-full form-bts">
                     <div className="w-full" onClick={(e) => { e.preventDefault() }}>
                         <Button typeBt={data.followed ? "green" : "yellow"} text={loading.follow !== false ? `Follow (${loading.follow})` : "Follow"} disabled={loading.follow !== false} onClick={() => {
-                            window.open(`https://twitter.com/intent/user?screen_name=${BLAST_TWITTER}`);
+                            window.open(`https://twitter.com/intent/user?screen_name=${TWITTER_USERNAME}`);
                             if (!data.followed) {
                                 onClickBt1()
                             }
@@ -121,7 +132,7 @@ const SubmitForm = () => {
                     </div>
                     <div className="w-full" onClick={(e) => { e.preventDefault() }}>
                         <Button typeBt={data.retweeted ? "green" : "yellow"} text={loading.retweet !== false ? `Retweet (${loading.retweet})` : "Retweet"} disabled={loading.retweet !== false} onClick={() => {
-                            window.open(`https://twitter.com/intent/retweet?tweet_id=${BLAST_TWEET}`);
+                            window.open(`https://twitter.com/intent/retweet?tweet_id=${RETWEET_ID}`);
                             if (!data.retweeted) {
                                 onClickBt2()
                             }
@@ -131,12 +142,23 @@ const SubmitForm = () => {
                 {!(address && isConnected) ? <Button
                     typeBt={"yellow"}
                     text="Connect Wallet"
-                    onClick={() => { open() }}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        open()
+                    }}
                 />
-                    : <Button
-                        disabled={!data.followed || !data.retweeted}
-                        typeBt={(data.followed && data.retweeted) ? "green" : "yellow"}
-                        text="Submit" />}
+                    : isSubmitted ? <Button
+                        disabled={true}
+                        typeBt={"green"}
+                        text="You have already submitted"
+                        onClick={(e) => { e.preventDefault(); }}
+                    />
+                        : <Button
+                            disabled={!data.followed || !data.retweeted}
+                            typeBt={(data.followed && data.retweeted) ? "green" : "yellow"}
+                            text="Submit"
+                            onClick={onSubmit}
+                        />}
 
             </form>
         </Wrap>
@@ -174,6 +196,7 @@ const Wrap = styled.div`
         textarea:active {
             border: none;
             outline: none;
+            resize: none;
         }
         .form-item {
             display: flex;
