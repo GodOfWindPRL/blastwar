@@ -10,7 +10,8 @@ import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useWidthScreen } from "helpers/hooks/useScreen";
 import { LINK_GG_SHEET, RETWEET_ID, TWITTER_USERNAME } from "environments";
 import { notifyToastify } from "helpers/notifyToastify";
-import Logo from "components/core/Logo";
+import { MdArrowBackIos } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const SubmitForm = () => {
     const { address, isConnected } = useAccount();
@@ -88,8 +89,11 @@ const SubmitForm = () => {
 
     return (
         <Wrap className="">
-
             <form className="wrap-home relative" onSubmit={onSubmit}>
+                <Link to={"/"} className="flex items-center gap-[4px] text-2 color-white absolute top-[20px] left-[20px] cursor-pointer">
+                    <MdArrowBackIos />
+                    <span className="text-2 text-center">Back to Homepage</span>
+                </Link>
                 <span className="text-4 color-green text-center">Whitelist Application</span>
                 <div className="form-item">
                     <span className="text-3 color-green">Wallet Address</span>
@@ -164,7 +168,6 @@ const SubmitForm = () => {
                         />}
 
             </form>
-            <Logo />
         </Wrap>
     )
 }
@@ -244,13 +247,13 @@ const Wrap = styled.div`
     ${breakpointsMedias.max991} {
         padding: 40px 20px;
         .wrap-home {
-            padding: 50px 30px;
+            padding: 70px 30px 50px 30px;
             .form-bts {
                 gap: 20px;
                 margin: 20px 0;
             }
             ${breakpointsMedias.max490} {
-                padding: 40px 20px;
+                padding: 60px 20px 40px 20px;
                 gap: 10px;
                 min-height: 700px;
                 .form-bts {

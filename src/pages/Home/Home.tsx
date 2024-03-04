@@ -39,7 +39,12 @@ const Home = () => {
                 <div className="home-text ">
                     <div className="ht-content flex flex-col ">
                         <span className="text-5 color-black">{"BLAST WAR"}</span>
-                        <span className="text-2 color-black ml-[30px] mr-[30px]">{t("homeText")}</span>
+                        <span className="text-2 color-black ml-[30px] mr-[30px] flex flex-col">
+                            <span className="">{t("homeText1")}</span>
+                            <span className="">{t("homeText21")}<span className="color-green">$WARS</span><span className="">{t("homeText22")}</span></span>
+                            <span className="">{t("homeText3")}</span>
+                            <span className="">{t("homeText4")}</span>
+                        </span>
                     </div>
                     <div className="ht-bts pl-[50px] gap-[10px] flex items-center w-full">
                         <Link to="/mint" className="max-w-[157px] flex-1">

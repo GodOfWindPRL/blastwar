@@ -12,10 +12,10 @@ const Footer = () => {
 
     const listSocials = [{
         icon: <img src={iconTw} />,
-        link: ""
+        link: "https://twitter.com/BlastWarsNFT"
     }, {
         icon: <img src={iconDis} />,
-        link: ""
+        link: "https://discord.gg/UMW4wgrkRJ"
     }, {
         hasArr: true,
         icon: <span className='text-3 uppercase color-black'>DOC</span>,
