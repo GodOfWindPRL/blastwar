@@ -25,7 +25,7 @@ export default function Routers() {
       element: <Stake />,
     },
     {
-      path: "/submit",
+      path: "/whitelist",
       element: <SubmitForm />,
     },
   ]);

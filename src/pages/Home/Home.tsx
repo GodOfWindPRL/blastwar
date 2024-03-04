@@ -49,6 +49,9 @@ const Home = () => {
                             <Button typeBt="white" text="stake" className="w-[157px]" />
                         </Link>
                     </div>
+                    <Link to="/whitelist" className="w-full max-w-[250px] flex-1 bt-whitelist">
+                        <Button typeBt="yellow" text="Apply Whitelist" className="w-[157px]" />
+                    </Link>
                 </div>
                 <div className="home-img ">
                     <img src={imgHome1} alt="" className="" />
@@ -169,6 +172,11 @@ const Wrap = styled.div`
                     padding-left: 20px;
                 }
             }
+            .bt-whitelist {
+                margin-top: 20px;
+                margin-right: auto;
+                margin-left: 50px;
+            }
         }
         .home-img {
             width: 55%;
@@ -247,6 +255,10 @@ const Wrap = styled.div`
                 .ht-bts {
                     justify-content: center;
                     padding-left: 0;
+                }
+                .bt-whitelist {
+                    margin-right: auto;
+                    margin-left: auto;
                 }
             }
             .home-img {

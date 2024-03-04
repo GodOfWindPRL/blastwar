@@ -91,7 +91,11 @@ const MintBid = () => {
                 </div>
                 <div className="ml-content flex flex-col">
                     <Title className="!w-[fit-content]" classText="text-4 uppercase" text={t("titleBox")} borderLeft />
-                    <span className="mlc-text text-2 color-white">{t("textBox")}</span>
+                    <span className="mlc-text text-2 color-white flex flex-col gap-[6px]">
+                        <span className="text-2 color-white">{t("textBox1")}<span className="text-2 color-green">$WAR</span></span>
+                        <span className="text-2 color-white">{t("textBox2")}</span>
+                        <span className="text-2 color-white">{t("textBox3")}</span>
+                    </span>
                     {publicEnded ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
                         : started ? <>
                             <span className="text-4 mt-[20px]">{whitelistEnded ? "Public" : "Whitelist"} Round</span>

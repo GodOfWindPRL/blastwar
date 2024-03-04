@@ -10,6 +10,7 @@ import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useWidthScreen } from "helpers/hooks/useScreen";
 import { LINK_GG_SHEET, RETWEET_ID, TWITTER_USERNAME } from "environments";
 import { notifyToastify } from "helpers/notifyToastify";
+import Logo from "components/core/Logo";
 
 const SubmitForm = () => {
     const { address, isConnected } = useAccount();
@@ -87,9 +88,11 @@ const SubmitForm = () => {
 
     return (
         <Wrap className="">
+
             <form className="wrap-home relative" onSubmit={onSubmit}>
+                <span className="text-4 color-green text-center">Whitelist Application</span>
                 <div className="form-item">
-                    <span className="text-3 color-green">Wallet address</span>
+                    <span className="text-3 color-green">Wallet Address</span>
                     <input
                         className="form-input text-2 color-white fi-2"
                         value={width >= 568 ? (address || "") : subStringAddress(address || "", 7)}
@@ -98,14 +101,14 @@ const SubmitForm = () => {
                     />
                 </div>
                 <div className="form-item">
-                    <span className="text-3 color-green">Your Twitter UserID</span>
+                    <span className="text-3 color-green">Twitter Link</span>
                     <input
                         className="form-input text-2 color-white"
                         value={data.twitter}
                         onChange={(e) => {
                             setData({ ...data, twitter: e.target.value })
                         }}
-                        placeholder="@username"
+                        placeholder="...Your Twitter Link"
                         required
                     />
                 </div>
@@ -161,6 +164,7 @@ const SubmitForm = () => {
                         />}
 
             </form>
+            <Logo />
         </Wrap>
     )
 }
@@ -177,6 +181,7 @@ const Wrap = styled.div`
     z-index: 1;
     position: relative;
     .wrap-home {
+        z-index: 0;
         width: 100%;
         display: flex;
         align-items: center;
@@ -184,13 +189,16 @@ const Wrap = styled.div`
         position: relative;
         height: fit-content;
         flex-direction: column;
-        padding: 70px 80px 70px 70px;
+        padding: 70px;
         max-width: 600px;
         margin: 0 auto;
         min-height: 800px;
-        background-image: url(${bgHome2});
+        /* background-image: url(${bgHome2});
         background-size: 100% 100%;
-        background-position: center;
+        background-position: center; */
+        border: 1px solid ${configColor.yellow};
+        border-radius: 4px;
+        background: #000;
         gap: 20px;
         textarea:focus,
         textarea:active {
@@ -234,14 +242,15 @@ const Wrap = styled.div`
         }
     }
     ${breakpointsMedias.max991} {
-        padding: 40px 0;
+        padding: 40px 20px;
         .wrap-home {
+            padding: 50px 30px;
             .form-bts {
                 gap: 20px;
                 margin: 20px 0;
             }
             ${breakpointsMedias.max490} {
-                padding: 50px 60px 50px 50px;
+                padding: 40px 20px;
                 gap: 10px;
                 min-height: 700px;
                 .form-bts {
