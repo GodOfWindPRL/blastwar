@@ -1,4 +1,6 @@
-import { Chain, defineChain } from 'viem'
+import { Chain } from 'viem'
+
+const BLAST_CHAIN = process.env.REACT_APP_CHAIN || "" as string
 
 export const blastTestnet = {
     id: 168587773,
@@ -21,4 +23,25 @@ export const blastTestnet = {
     testnet: true,
 } as Chain
 
-export const chains = [blastTestnet];
+export const blastMainnet = {
+    id: 81457,
+    name: 'Blast Mainnet',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://rpc.blast.io'] },
+        public: { http: ['https://rpc.blast.io'] },
+    },
+    blockExplorers: {
+        default: { name: 'Blastscan', url: 'https://blastscan.io' },
+    },
+    contracts: {
+        multicall3: {
+            address: '0xca11bde05977b3631167028862be2a173976ca11',
+            // blockCreated: 367826,
+        },
+    },
+    network: "Blast",
+    testnet: false,
+} as Chain
+
+export const chains = [BLAST_CHAIN === "testnet" ? blastTestnet : blastMainnet];

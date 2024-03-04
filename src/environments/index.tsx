@@ -15,6 +15,8 @@ const CONTRACT_GAME = process.env.REACT_APP_CONTRACT_GAME as Address
 const TWITTER_USERNAME = process.env.REACT_APP_TWITTER_USERNAME as String
 const RETWEET_ID = process.env.REACT_APP_TWITTER_RETWEET_ID as String
 const LINK_GG_SHEET = process.env.REACT_APP_LINK_GG_SHEET as String
+const LINK_TWITTER = process.env.REACT_APP_LINK_TWITTER || "" as string
+const LINK_DISCORD = process.env.REACT_APP_LINK_DISCORD || "" as string
 
 export {
     CONTRACT_SALE,
@@ -31,6 +33,8 @@ export {
     ABI_GAME,
     TWITTER_USERNAME,
     RETWEET_ID,
-    LINK_GG_SHEET
+    LINK_GG_SHEET,
+    LINK_TWITTER,
+    LINK_DISCORD
 }
 

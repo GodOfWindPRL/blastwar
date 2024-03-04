@@ -7,15 +7,16 @@ import iconTw2 from "assets/images/twitter-2.png";
 import iconDis from "assets/images/discord.png";
 import iconDis2 from "assets/images/discord-2.png";
 import { breakpointsMedias } from 'constants/breakpoints';
+import { LINK_DISCORD, LINK_TWITTER } from 'environments';
 
 const Footer = () => {
 
     const listSocials = [{
         icon: <img src={iconTw} />,
-        link: "https://twitter.com/BlastWarsNFT"
+        link: LINK_TWITTER
     }, {
         icon: <img src={iconDis} />,
-        link: "https://discord.gg/UMW4wgrkRJ"
+        link: LINK_DISCORD
     }, {
         hasArr: true,
         icon: <span className='text-3 uppercase color-black'>DOC</span>,
