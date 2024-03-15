@@ -1,10 +1,21 @@
 import { whitelist } from "whitelist";
 import { genRootHash, getMerklePath } from "./merkleTree";
 import { loadWhitelist } from "helpers/loadWhitelist";
+import { ogList } from "OGList";
 
 export const getAirdropPath = async (address: any) => {
   // Generate Merkle Tree
   genRootHash(loadWhitelist(whitelist));
+
+  // Get path
+  let path = getMerklePath(address);
+  // console.log(`Airdrop path for address ${address}: ${path}`);
+  return path;
+};
+
+export const getAirdropPathOG = async (address: any) => {
+  // Generate Merkle Tree
+  genRootHash(loadWhitelist(ogList));
 
   // Get path
   let path = getMerklePath(address);

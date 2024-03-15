@@ -9,7 +9,7 @@ import MintBuy from "./MintBuy";
 import { breakpointsMedias } from "constants/breakpoints";
 
 const Mint = () => {
-    const [stage, setStage] = useState<"bid" | "mint">("mint");
+    const [stage, setStage] = useState<"bid" | "mint">("bid");
 
     useEffect(() => {
         // setTimeout(() => {

@@ -1,6 +1,6 @@
-import { ABI_GAME, ABI_SALE, CONTRACT_GAME, CONTRACT_SALE } from 'environments'
+import { ABI_GAME, CONTRACT_GAME } from 'environments'
 import { useMemo } from 'react'
-import { useAccount, useContractRead } from 'wagmi'
+import { useContractRead } from 'wagmi'
 
 
 const usePrice = () => {

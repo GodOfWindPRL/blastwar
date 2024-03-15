@@ -11,6 +11,13 @@ const useCommited = () => {
         args: [address || ""],
         watch: true
     })
+    const { data: ogData, isSuccess: ogIsSuccess } = useContractRead({
+        address: CONTRACT_SALE,
+        abi: ABI_SALE,
+        functionName: 'OGCommitted',
+        args: [address || ""],
+        watch: true
+    })
     const { data: plData, isSuccess: plIsSuccess } = useContractRead({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
@@ -18,12 +25,20 @@ const useCommited = () => {
         args: [address || ""],
         watch: true
     })
+    const ogCommited = useMemo(() => {
+        if (ogData) {
+            return true
+        }
+        return false
+    }, [ogData, ogIsSuccess]);
+
     const wlCommited = useMemo(() => {
         if (data) {
             return true
         }
         return false
     }, [data, isSuccess]);
+
     const plCommited = useMemo(() => {
         if (plData) {
             return true
@@ -33,7 +48,7 @@ const useCommited = () => {
 
     // console.log(votePeriod)
 
-    return { wlCommited, plCommited }
+    return { wlCommited, plCommited, ogCommited }
 }
 
 export default useCommited

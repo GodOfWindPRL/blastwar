@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { parseEther } from 'viem'
 import { useContractWrite, useWaitForTransaction } from 'wagmi'
-import { MINT_PRICE } from './useWhitelistCommit'
+
+export const MINT_PRICE_PUBLIC = (process.env.REACT_APP_PRICE_PUBLIC || "0").toString()
 
 const usePublicCommit = () => {
     const { t } = useTranslation()
@@ -13,7 +14,7 @@ const usePublicCommit = () => {
         abi: ABI_SALE,
         functionName: 'publicCommit',
         args: [],
-        value: parseEther(MINT_PRICE)
+        value: parseEther(MINT_PRICE_PUBLIC)
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,

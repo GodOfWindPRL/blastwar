@@ -40,6 +40,8 @@
     "address": "Address",
     "earned": "Earned",
     "WhitelistCommit": "Whitelist commit",
+    "OGCommit": "OG commit",
+    "PublicCommit": "Commit",
     "commit": "Commit",
     "claim": "Claim",
     "claimError": "Claim error",

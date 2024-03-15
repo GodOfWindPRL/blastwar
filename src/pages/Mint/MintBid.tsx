@@ -8,73 +8,85 @@ import Title from "components/core/Title";
 import configColor from "constants/configColor";
 import { useEffect, useMemo, useState } from "react";
 import { breakpointsMedias } from "constants/breakpoints";
-import useTotalCommited from "helpers/contracts/useTotalCommited";
 import useBalanceNative from "helpers/contracts/useBalanceNative";
-import useWhitelistEndtime from "helpers/contracts/useWhitelistEndtime";
 import useWhitelistCommit, { MINT_PRICE } from "helpers/contracts/useWhitelistCommit";
 import { useAccount } from "wagmi";
 import BigNumber from "bignumber.js";
-import usePublicEndtime from "helpers/contracts/usePublicEndtime";
-import usePublicCommit from "helpers/contracts/usePublicCommit";
+import usePublicCommit, { MINT_PRICE_PUBLIC } from "helpers/contracts/usePublicCommit";
 import useClaim from "helpers/contracts/useClaim";
-import { getAirdropPath } from "helpers/utils/get-airdrop-info";
+import { getAirdropPath, getAirdropPathOG } from "helpers/utils/get-airdrop-info";
 import useCommited from "helpers/contracts/useCommited";
 import useClaimed from "helpers/contracts/useClaimed";
 import { loadWhitelist } from "helpers/loadWhitelist";
 import { whitelist } from "whitelist";
-
-const MAX_SUPPLY = 5000
+import useRound, { MAX_SUPPLY } from "helpers/contracts/useRound";
+import useOGCommit from "helpers/contracts/useOGCommit";
+import { ogList } from "OGList";
 
 const MintBid = () => {
     const { t } = useTranslation();
     const { address, isConnected } = useAccount();
     const [path, setPath] = useState<string[]>([]);
     // const [data, setData] = useState<TopItem[]>([]);
+    const { currentRound, totalCommitted } = useRound();
+    // console.log({ currentRound })
 
-    const { totalCommitted } = useTotalCommited();
-    const { ended: whitelistEnded, started } = useWhitelistEndtime();
-    const { publicEnded } = usePublicEndtime();
-    const { wlCommited, plCommited } = useCommited();
+    const { wlCommited, plCommited, ogCommited } = useCommited();
+
     const { isClaimed } = useClaimed();
     const { balance } = useBalanceNative();
     const { onCommit, isLoadingCommit, isSuccess: wlCommitSuccess } = useWhitelistCommit(path);
+    const { onCommit: onOGCommit, isLoadingCommit: isLoadingOGCommit, isSuccess: ogCommitSuccess } = useOGCommit(path);
     const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit, isSuccess: plCommitSuccess } = usePublicCommit();
     const { onClaim, isLoadingClaim, isSuccess: isClaimSuccess } = useClaim();
     const isWhitelist = loadWhitelist(whitelist).includes(address || "")
+    const isOGList = loadWhitelist(ogList).includes(address || "")
 
     useEffect(() => {
         if (address && isConnected) {
-            getPath();
+            getPath(currentRound.round === "og");
         }
-    }, [address, isConnected]);
+    }, [address, isConnected, currentRound.round]);
 
-    const getPath = async () => {
-        let newPath = await getAirdropPath(address) as string[];
-        setPath(newPath);
+    const getPath = async (isOG: boolean) => {
+        if (isOG) {
+            let newPath = await getAirdropPathOG(address) as string[];
+            setPath(newPath);
+        } else {
+            let newPath = await getAirdropPath(address) as string[];
+            setPath(newPath);
+        }
         // console.log(newPath)
     }
 
     const errBalance = useMemo(() => {
-        return balance < BigInt(BigNumber(MINT_PRICE).multipliedBy(1e18).toString(10))
-    }, [balance])
+        return balance < BigInt(BigNumber((currentRound.round === "OG" || currentRound.round === "Whitelist") ? MINT_PRICE : MINT_PRICE_PUBLIC).multipliedBy(1e18).toString(10))
+    }, [balance, currentRound.round])
 
     const isCommitted = useMemo(() => {
-        if (started) {
-            if (!whitelistEnded) {
-                return wlCommited || wlCommitSuccess
-            }
-            if (!publicEnded) {
-                return plCommited || plCommitSuccess
-            }
-            return wlCommited || plCommited
+        if (currentRound.round === null) {
+            return false
         }
-        return false
-    }, [wlCommited, plCommited, whitelistEnded, started, publicEnded, wlCommitSuccess, plCommitSuccess])
+        if (currentRound.round === "Whitelist") {
+            return wlCommited || wlCommitSuccess
+        }
+        if (currentRound.round === "OG") {
+            return ogCommited || ogCommitSuccess
+        }
+        if (currentRound.round === "Public") {
+            return plCommited || plCommitSuccess
+        }
+        return wlCommited || ogCommited || plCommited
+    }, [wlCommited, plCommited, ogCommited, wlCommitSuccess, plCommitSuccess, ogCommitSuccess, currentRound])
 
     const onClickCommit = () => {
-        if (!whitelistEnded) {
+        if (currentRound.round === "Whitelist") {
             onCommit()
-        } else if (!publicEnded) {
+        }
+        if (currentRound.round === "OG") {
+            onOGCommit()
+        }
+        if (currentRound.round === "Public") {
             onPublicCommit()
         }
     }
@@ -96,28 +108,35 @@ const MintBid = () => {
                         <span className="text-2 color-white">{t("textBox2")}</span>
                         <span className="text-2 color-white">{t("textBox3")}</span>
                     </span>
-                    {publicEnded ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
-                        : started ? <>
-                            <span className="text-4 mt-[20px]">{whitelistEnded ? "Public" : "Whitelist"} Round</span>
-                            <span className="text-3 color-yellow ">Mint price: {MINT_PRICE} ETH</span>
-                            <div className="flex flex-col w-full gap-[6px]">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-2 color-green mt-[20px]">Total committed</span>
-                                    <span className="text-2 color-green mt-[20px]">{Number(totalCommitted)} / {MAX_SUPPLY}</span>
+                    {currentRound.round === "end" ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
+                        : currentRound.round === null ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Whitelist Round has not started yet</span>
+                            : <>
+                                <span className="text-4 mt-[20px]">{currentRound.round} Round {currentRound.isEnd ? "ended" : ""}</span>
+                                <span className="text-3 color-yellow ">Mint price: {currentRound.round === "Public" ? MINT_PRICE : MINT_PRICE_PUBLIC} ETH</span>
+                                <div className="flex flex-col w-full gap-[6px]">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-2 color-green mt-[20px]">Total committed</span>
+                                        <span className="text-2 color-green mt-[20px]">{Number(totalCommitted)} / {MAX_SUPPLY}</span>
+                                    </div>
+                                    <div className={`pr-bar w-full h-[10px] rounded-[8px] border-[1px]`}>
+                                        <div style={{
+                                            width: `${(Number(totalCommitted) / MAX_SUPPLY) * 100}%`
+                                        }}></div>
+                                    </div>
                                 </div>
-                                <div className={`pr-bar w-full h-[10px] rounded-[8px] border-[1px]`}>
-                                    <div style={{
-                                        width: `${(Number(totalCommitted) / MAX_SUPPLY) * 100}%`
-                                    }}></div>
-                                </div>
-                            </div>
-                        </> : <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Whitelist Round has not started yet</span>}
+                            </>}
                     <div className="mlc-bt">
-                        {!publicEnded ? <Button
-                            text={t(whitelistEnded ? "commit" : "WhitelistCommit")}
+                        {currentRound.round !== "end" ? <Button
+                            text={t((currentRound.round || "") + "commit")}
                             typeBt="yellow"
-                            isLoading={isLoadingCommit || isLoadingPublicCommit}
-                            disabled={(!isWhitelist && !whitelistEnded) || !(address && isConnected) || errBalance || !started || isCommitted}
+                            isLoading={isLoadingCommit || isLoadingPublicCommit || isLoadingOGCommit}
+                            disabled={(!isWhitelist && currentRound.round === "Whitelist")
+                                || (!isOGList && currentRound.round === "OG")
+                                || !(address && isConnected)
+                                || errBalance
+                                || currentRound.isEnd
+                                || currentRound.round === "end"
+                                || isCommitted}
                             onClick={onClickCommit}
                         /> : <Button
                             text={t("claim")}
@@ -127,12 +146,13 @@ const MintBid = () => {
                             onClick={onClaim}
                         />}
                     </div>
-                    {!isWhitelist ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not whitelist</span>
-                        : (errBalance && !publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
-                            : (isCommitted && !publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already committed</span>
-                                : ((isClaimed || isClaimSuccess) && publicEnded) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already claimed</span>
-                                    : (!(isClaimed || isClaimSuccess) && publicEnded && !isCommitted) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Nothing to claim</span>
-                                        : null}
+                    {(!isWhitelist && currentRound.round === "Whitelist") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not whitelist</span>
+                        : (!isOGList && currentRound.round === "OG") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not OG</span>
+                            : (errBalance && currentRound.round !== "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
+                                : (isCommitted && currentRound.round !== "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already committed</span>
+                                    : ((isClaimed || isClaimSuccess) && currentRound.round === "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already claimed</span>
+                                        : (!(isClaimed || isClaimSuccess) && currentRound.round === "end" && !isCommitted) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Nothing to claim</span>
+                                            : null}
                 </div>
             </div>
             {/* <div className="mint-right">
