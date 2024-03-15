@@ -11,10 +11,22 @@ import bgBtMint from "assets/images/bg-bt-mint.png"
 import Button from "components/core/Button";
 import numeral from "numeral";
 import { breakpointsMedias } from "constants/breakpoints";
+import usePrice from "helpers/contracts/usePrice";
+import { formatDataNormal } from "helpers/format/formatNumber";
+import useApproveToken from "helpers/contracts/useApproveToken";
+import { CONTRACT_GAME, CONTRACT_TOKEN } from "environments";
+import { useAccount } from "wagmi";
+import useMint from "helpers/contracts/useMint";
+import useBalanceToken from "helpers/contracts/useBalanceToken";
+import { notifyToastify } from "helpers/notifyToastify";
 
 const MintBuy = () => {
     const { t } = useTranslation();
-    const currentPrice = 1000
+    const { address, isConnected } = useAccount()
+    const { gamePrice } = usePrice();
+    const { balance } = useBalanceToken();
+    const { onMint, isLoadingMint } = useMint();
+    const { onApproveToken, isApproved, isLoadingApprove } = useApproveToken({ token: CONTRACT_TOKEN, spender: CONTRACT_GAME, value: gamePrice });
 
     const listNFT = [{
         title: "nameHero",
@@ -23,6 +35,15 @@ const MintBuy = () => {
         title: "nameMonster",
         img: imgMonster
     }]
+
+    const onConfirmMint = () => {
+        console.log({ balance, gamePrice })
+        if (balance < gamePrice) {
+            notifyToastify("error", "Balance is not enough")
+        } else {
+            onMint()
+        }
+    }
 
     return (
         <Wrap className="">
@@ -41,11 +62,23 @@ const MintBuy = () => {
             <div className="mint-bt">
                 <div className="mbt-price">
                     <span className="text-1 color-yellow uppercase">{t("currentPrice")}</span>
-                    <span className="text-42 color-yellow">{numeral(currentPrice).format("0,0.[00]")}</span>
+                    <span className="text-42 color-yellow">{numeral(formatDataNormal(gamePrice)).format("0,0.[00]")}</span>
                     <span className="text-1 color-yellow">$WAR</span>
                 </div>
                 <div className="mbt-bt">
-                    <Button typeBt="green" text="mint" />
+                    {isApproved ? <Button
+                        typeBt="green"
+                        text="mint"
+                        disabled={!(address && isConnected)}
+                        isLoading={isLoadingMint}
+                        onClick={onConfirmMint}
+                    />
+                        : <Button
+                            typeBt="green"
+                            text="approve"
+                            isLoading={isLoadingApprove}
+                            disabled={!(address && isConnected)}
+                            onClick={onApproveToken} />}
                 </div>
             </div>
         </Wrap>

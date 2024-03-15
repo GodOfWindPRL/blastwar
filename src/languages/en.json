@@ -49,5 +49,8 @@
     "claimHumanRewardError": "Claim Human Reward error",
     "claimHumanRewardSuccess": "Claim Human Reward successful",
     "claimMonsterRewardError": "Claim Monster Reward error",
-    "claimMonsterRewardSuccess": "Claim Monster Reward successful"
+    "claimMonsterRewardSuccess": "Claim Monster Reward successful",
+    "mintError": "Mint error",
+    "mintSuccess": "Mint successful",
+    "mintError2": "Your NFT was stolen by a Monster"
 }
