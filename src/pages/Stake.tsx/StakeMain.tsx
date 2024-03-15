@@ -72,10 +72,10 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                     <div className="sl-table scrollbar overflow-auto">
                         <div className="slt-row">
                             <div className="slt-col-1">
-                                <span className="text-2 color-green">$WAR {t("earnPerDay")}</span>
+                                <span className="text-2 color-green">$WARS {t("earnPerDay")}</span>
                             </div>
                             <div className="slt-col-2">
-                                <span className="uppercase text-22 color-green">{data.earnPerDay === null ? "--" : numeral(data.earnPerDay).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                                <span className="uppercase text-22 color-green">{data.earnPerDay === null ? "--" : numeral(data.earnPerDay).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WARS</span></span>
                             </div>
                         </div>
                         <div className="slt-row">
@@ -83,15 +83,15 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                                 <span className="text-2 color-green">{t("yourWarEarned")}</span>
                             </div>
                             <div className="slt-col-2">
-                                <span className="uppercase text-22 color-green">{numeral(BigNumber((earnedHuman + earnedMonster).toString()).dividedBy(1e18).toString(10)).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                                <span className="uppercase text-22 color-green">{numeral(BigNumber((earnedHuman + earnedMonster).toString()).dividedBy(1e18).toString(10)).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WARS</span></span>
                             </div>
                         </div>
                         <div className="slt-row">
                             <div className="slt-col-1">
-                                <span className="text-2 color-green">$WAR {t("stealed")}</span>
+                                <span className="text-2 color-green">$WARS {t("stealed")}</span>
                             </div>
                             <div className="slt-col-2">
-                                <span className="uppercase text-22 color-green">{data.tokenStealed === null ? "--" : numeral(data.tokenStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                                <span className="uppercase text-22 color-green">{data.tokenStealed === null ? "--" : numeral(data.tokenStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WARS</span></span>
                             </div>
                         </div>
                         <div className="slt-row">
@@ -99,7 +99,7 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                                 <span className="text-2 color-green">{t("humanStealed")}</span>
                             </div>
                             <div className="slt-col-2">
-                                <span className="uppercase text-22 color-green">{data.humanStealed === null ? "--" : numeral(data.humanStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WAR</span></span>
+                                <span className="uppercase text-22 color-green">{data.humanStealed === null ? "--" : numeral(data.humanStealed).format("0,0.[00]")}  <span className="uppercase text-2 color-green">$WARS</span></span>
                             </div>
                         </div>
                         <div className="slt-row">

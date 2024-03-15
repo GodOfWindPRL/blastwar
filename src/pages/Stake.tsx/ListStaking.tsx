@@ -237,6 +237,8 @@ const Wrap = styled.div`
             overflow-y: hidden;
             flex-wrap: nowrap;
             display: inline-flexbox;
+            min-height: calc(50vw - 20px);
+            background-size: auto 100%;
             /* scroll-snap-type: x mandatory; */
             .sl-item {
                 width: calc(50vw - 20px);
