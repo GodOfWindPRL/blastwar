@@ -54,9 +54,9 @@ const Home = () => {
                             <Button typeBt="white" text="stake" className="w-[157px]" />
                         </Link>
                     </div>
-                    <Link to="/whitelist" className="w-full max-w-[250px] flex-1 bt-whitelist">
+                    {/* <Link to="/whitelist" className="w-full max-w-[250px] flex-1 bt-whitelist">
                         <Button typeBt="yellow" text="Apply Whitelist" className="w-[157px]" />
-                    </Link>
+                    </Link> */}
                 </div>
                 <div className="home-img ">
                     <img src={imgHome1} alt="" className="" />

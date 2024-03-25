@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { ABI_SALE, CONTRACT_SALE } from 'environments'
 import { notifyToastify } from 'helpers/notifyToastify'
 import { useEffect } from 'react'
@@ -7,14 +8,14 @@ import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
 export const MINT_PRICE_PUBLIC = (process.env.REACT_APP_PRICE_PUBLIC || "0").toString()
 
-const usePublicCommit = () => {
+const usePublicCommit = (amount: number) => {
     const { t } = useTranslation()
     const { write, isLoading, isSuccess, isError, data } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
         functionName: 'publicCommit',
-        args: [],
-        value: parseEther(MINT_PRICE_PUBLIC)
+        args: [amount],
+        value: parseEther(BigNumber(MINT_PRICE_PUBLIC).multipliedBy(amount).toString())
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,

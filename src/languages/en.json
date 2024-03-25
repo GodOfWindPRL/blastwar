@@ -60,5 +60,6 @@
     "claimMonsterRewardSuccess": "Claim Monster Reward successful",
     "mintError": "Mint error",
     "mintSuccess": "Mint successful",
-    "mintError2": "Your NFT was stolen by a Monster"
+    "mintError2": "Your NFT was stolen by a Monster",
+    "mint&stake": "Mint & Stake"
 }

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { ABI_SALE, CONTRACT_SALE } from 'environments'
 import { notifyToastify } from 'helpers/notifyToastify'
 import { useEffect } from 'react'
@@ -5,16 +6,16 @@ import { useTranslation } from 'react-i18next'
 import { parseEther } from 'viem'
 import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
-export const MINT_PRICE = (process.env.REACT_APP_PRICE_WHITELIST || "0").toString()
+export const MINT_PRICE_PUBLIC = (process.env.REACT_APP_PRICE_PUBLIC || "0").toString()
 
-const useWhitelistCommit = (e: string[]) => {
+const useMintAndStake = (amount: number) => {
     const { t } = useTranslation()
-    const { write, isLoading, isSuccess, isError, data, error } = useContractWrite({
+    const { write, isLoading, isSuccess, isError, data } = useContractWrite({
         address: CONTRACT_SALE,
         abi: ABI_SALE,
-        functionName: 'whitelistCommit',
-        args: [e],
-        value: parseEther(MINT_PRICE)
+        functionName: 'publicCommitandStake',
+        args: [amount],
+        value: parseEther(BigNumber(MINT_PRICE_PUBLIC).multipliedBy(amount).toString())
     })
     const { status } = useWaitForTransaction({
         confirmations: 1,
@@ -44,4 +45,4 @@ const useWhitelistCommit = (e: string[]) => {
     return { onCommit, isLoadingCommit: isLoading || (isSuccess && status === "loading"), isSuccess: status === "success", isError }
 }
 
-export default useWhitelistCommit
+export default useMintAndStake

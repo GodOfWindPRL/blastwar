@@ -6,91 +6,69 @@ import Button from "components/core/Button";
 import { useTranslation } from "react-i18next";
 import Title from "components/core/Title";
 import configColor from "constants/configColor";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { breakpointsMedias } from "constants/breakpoints";
 import useBalanceNative from "helpers/contracts/useBalanceNative";
-import useWhitelistCommit, { MINT_PRICE } from "helpers/contracts/useWhitelistCommit";
 import { useAccount } from "wagmi";
 import BigNumber from "bignumber.js";
 import usePublicCommit, { MINT_PRICE_PUBLIC } from "helpers/contracts/usePublicCommit";
-import useClaim from "helpers/contracts/useClaim";
-import { getAirdropPath, getAirdropPathOG } from "helpers/utils/get-airdrop-info";
 import useCommited from "helpers/contracts/useCommited";
-import useClaimed from "helpers/contracts/useClaimed";
-import { loadWhitelist } from "helpers/loadWhitelist";
-import { whitelist } from "whitelist";
 import useRound, { MAX_SUPPLY } from "helpers/contracts/useRound";
-import useOGCommit from "helpers/contracts/useOGCommit";
-import { ogList } from "OGList";
+import { NumericFormat } from "react-number-format";
+import { IoMdAdd, IoMdRemove } from "react-icons/io";
+import useMintAndStake from "helpers/contracts/useMintAndStake";
+import { notifyToastify } from "helpers/notifyToastify";
 
 const MintBid = () => {
     const { t } = useTranslation();
     const { address, isConnected } = useAccount();
-    const [path, setPath] = useState<string[]>([]);
     // const [data, setData] = useState<TopItem[]>([]);
-    const { currentRound, totalCommitted } = useRound();
-    // console.log({ currentRound })
-
-    const { wlCommited, plCommited, ogCommited } = useCommited();
-
-    const { isClaimed } = useClaimed();
+    const { enableSale, totalCommitted } = useRound();
+    const { userCommitted } = useCommited();
     const { balance } = useBalanceNative();
-    const { onCommit, isLoadingCommit, isSuccess: wlCommitSuccess } = useWhitelistCommit(path);
-    const { onCommit: onOGCommit, isLoadingCommit: isLoadingOGCommit, isSuccess: ogCommitSuccess } = useOGCommit(path);
-    const { onCommit: onPublicCommit, isLoadingCommit: isLoadingPublicCommit, isSuccess: plCommitSuccess } = usePublicCommit();
-    const { onClaim, isLoadingClaim, isSuccess: isClaimSuccess } = useClaim();
-    const isWhitelist = loadWhitelist(whitelist).includes(address || "")
-    const isOGList = loadWhitelist(ogList).includes(address || "")
+    const [amount, setAmount] = useState(1)
+    const { onCommit, isLoadingCommit: isLoadingPublicCommit } = usePublicCommit(Number(amount));
+    const { onCommit: onCommitAndStake, isLoadingCommit: isLoadingMintStake } = useMintAndStake(Number(amount));
 
-    useEffect(() => {
-        if (address && isConnected) {
-            getPath(currentRound.round === "og");
-        }
-    }, [address, isConnected, currentRound.round]);
-
-    const getPath = async (isOG: boolean) => {
-        if (isOG) {
-            let newPath = await getAirdropPathOG(address) as string[];
-            setPath(newPath);
-        } else {
-            let newPath = await getAirdropPath(address) as string[];
-            setPath(newPath);
-        }
-        // console.log(newPath)
-    }
 
     const errBalance = useMemo(() => {
-        return balance < BigInt(BigNumber((currentRound.round === "OG" || currentRound.round === "Whitelist") ? MINT_PRICE : MINT_PRICE_PUBLIC).multipliedBy(1e18).toString(10))
-    }, [balance, currentRound.round])
-
-    const isCommitted = useMemo(() => {
-        if (currentRound.round === null) {
+        if (!address) {
             return false
         }
-        if (currentRound.round === "Whitelist") {
-            return wlCommited || wlCommitSuccess
-        }
-        if (currentRound.round === "OG") {
-            return ogCommited || ogCommitSuccess
-        }
-        if (currentRound.round === "Public") {
-            return plCommited || plCommitSuccess
-        }
-        return wlCommited || ogCommited || plCommited
-    }, [wlCommited, plCommited, ogCommited, wlCommitSuccess, plCommitSuccess, ogCommitSuccess, currentRound])
+        return balance < BigInt(BigNumber(MINT_PRICE_PUBLIC).multipliedBy(1e18).multipliedBy(amount).toString(10))
+    }, [balance, address])
 
-    const onClickCommit = () => {
-        if (currentRound.round === "Whitelist") {
+    const onMinus = () => {
+        if (Number(amount) > 1) {
+            setAmount(Number(amount) - 1)
+        } else {
+            setAmount(1)
+        }
+    }
+    const onAdd = () => {
+        setAmount(Number(amount) + 1)
+    }
+
+    const onMint = () => {
+        if (Number(amount) > (10 - Number(userCommitted))) {
+            notifyToastify("error", `You can only mint ${10 - Number(userCommitted)} more times`)
+        } else {
             onCommit()
         }
-        if (currentRound.round === "OG") {
-            onOGCommit()
-        }
-        if (currentRound.round === "Public") {
-            onPublicCommit()
+    }
+    const onMintStake = () => {
+        if (Number(amount) > (10 - Number(userCommitted))) {
+            notifyToastify("error", `You can only mint ${10 - Number(userCommitted)} more times`)
+        } else {
+            onCommitAndStake()
         }
     }
 
+    console.log(!(address && isConnected),
+        errBalance,
+        Number(userCommitted) >= 10,
+        enableSale,
+        Number(totalCommitted) >= MAX_SUPPLY)
 
     return (
         <Wrap className="">
@@ -108,51 +86,74 @@ const MintBid = () => {
                         <span className="text-2 color-white">{t("textBox2")}</span>
                         <span className="text-2 color-white">{t("textBox3")}</span>
                     </span>
-                    {currentRound.round === "end" ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Genesis sale ended</span>
-                        : currentRound.round === null ? <span className="end-sale text-3 uppercase color-yellow mt-[20px]">Whitelist Round has not started yet</span>
-                            : <>
-                                <span className="text-4 mt-[20px]">{currentRound.round} Round {currentRound.isEnd ? "ended" : ""}</span>
-                                <span className="text-3 color-yellow ">Mint price: {currentRound.round === "Public" ? MINT_PRICE : MINT_PRICE_PUBLIC} ETH</span>
-                                <div className="flex flex-col w-full gap-[6px]">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-2 color-green mt-[20px]">Total committed</span>
-                                        <span className="text-2 color-green mt-[20px]">{Number(totalCommitted)} / {MAX_SUPPLY}</span>
-                                    </div>
-                                    <div className={`pr-bar w-full h-[10px] rounded-[8px] border-[1px]`}>
-                                        <div style={{
-                                            width: `${(Number(totalCommitted) / MAX_SUPPLY) * 100}%`
-                                        }}></div>
-                                    </div>
-                                </div>
-                            </>}
-                    <div className="mlc-bt">
-                        {currentRound.round !== "end" ? <Button
-                            text={t((currentRound.round || "") + "commit")}
-                            typeBt="yellow"
-                            isLoading={isLoadingCommit || isLoadingPublicCommit || isLoadingOGCommit}
-                            disabled={(!isWhitelist && currentRound.round === "Whitelist")
-                                || (!isOGList && currentRound.round === "OG")
-                                || !(address && isConnected)
-                                || errBalance
-                                || currentRound.isEnd
-                                || currentRound.round === "end"
-                                || isCommitted}
-                            onClick={onClickCommit}
-                        /> : <Button
-                            text={t("claim")}
-                            typeBt="yellow"
-                            isLoading={isLoadingClaim}
-                            disabled={!(address && isConnected) || (isClaimed || isClaimSuccess) || (!isClaimed && !isCommitted) || isLoadingClaim}
-                            onClick={onClaim}
-                        />}
+                    {!enableSale && <span className="end-sale text-3 uppercase color-red mt-[20px]">Genesis Sale is currently disabled</span>}
+
+                    <span className="text-3 color-yellow mt-[10px]">Mint price: {MINT_PRICE_PUBLIC} ETH</span>
+                    <div className="flex flex-col w-full gap-[6px]">
+                        <div className="flex items-center justify-between">
+                            <span className="text-2 color-green mt-[20px]">Total committed</span>
+                            <span className="text-2 color-green mt-[20px]">{Number(totalCommitted)} / {MAX_SUPPLY}</span>
+                        </div>
+                        <div className={`pr-bar w-full h-[10px] rounded-[8px] border-[1px]`}>
+                            <div style={{
+                                width: `${(Number(totalCommitted) / MAX_SUPPLY) * 100}%`
+                            }}></div>
+                        </div>
                     </div>
-                    {(!isWhitelist && currentRound.round === "Whitelist") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not whitelist</span>
-                        : (!isOGList && currentRound.round === "OG") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You are not OG</span>
-                            : (errBalance && currentRound.round !== "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
-                                : (isCommitted && currentRound.round !== "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already committed</span>
-                                    : ((isClaimed || isClaimSuccess) && currentRound.round === "end") ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You're already claimed</span>
-                                        : (!(isClaimed || isClaimSuccess) && currentRound.round === "end" && !isCommitted) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Nothing to claim</span>
-                                            : null}
+
+                    <div className="mint-amount">
+                        <div className="ma-input">
+                            <div className="mai-bt" onClick={onMinus}><IoMdRemove size={20} color="black" /></div>
+                            <NumericFormat
+                                inputMode="decimal"
+                                value={amount}
+                                onValueChange={(values: any) => {
+                                    setAmount(values.value);
+                                }}
+                                thousandSeparator={true}
+                                placeholder={""}
+                                className="text-center text-3 color-green flex-1 mai-main"
+                                allowNegative={false}
+                                decimalScale={0}
+                            />
+                            <div className="mai-bt" onClick={onAdd}><IoMdAdd size={20} color="black" /></div>
+                        </div>
+                        <span className="ma-minted text-2 color-white ">Minted: {Number(userCommitted)} / 10</span>
+                    </div>
+                    <div className="mlc-bts">
+                        <div className="mlc-bt">
+                            <Button
+                                text={t("mint")}
+                                typeBt="yellow"
+                                isLoading={isLoadingPublicCommit || isLoadingMintStake}
+                                disabled={!(address && isConnected)
+                                    || !Number(amount)
+                                    || errBalance
+                                    || Number(userCommitted) >= 10
+                                    || !enableSale
+                                    || Number(totalCommitted) >= MAX_SUPPLY}
+                                onClick={onMint}
+                            />
+                        </div>
+                        <div className="mlc-bt">
+                            <Button
+                                text={t("mint&stake")}
+                                typeBt="white"
+                                isLoading={isLoadingPublicCommit || isLoadingMintStake}
+                                disabled={!(address && isConnected)
+                                    || !Number(amount)
+                                    || errBalance
+                                    || Number(userCommitted) >= 10
+                                    || !enableSale
+                                    || Number(totalCommitted) >= MAX_SUPPLY}
+                                onClick={onMintStake}
+                            />
+                        </div>
+                    </div>
+
+                    {(errBalance && enableSale) ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">Balance is not enough</span>
+                        : Number(userCommitted) >= 10 ? <span className="text-err color-red text-2 mt-[10px] text-center w-fit">You have minted 10 times already</span>
+                            : null}
                 </div>
             </div>
             {/* <div className="mint-right">
@@ -197,6 +198,7 @@ const Wrap = styled.div`
             overflow: hidden;
             flex-direction: column;
             background: rgba(0, 255, 163, 0.2);
+            z-index: 1;
             .mr-row {
                 display: flex;
                 align-items: center;
@@ -329,15 +331,51 @@ const Wrap = styled.div`
             }
             .ml-content {
                 flex: 1;
+                z-index: 1;
                 .mlc-text {
                     margin-top: 36px;
                     padding-left: 24px;
                     margin-left: 16px;
                     border-left: 2px solid ${configColor.green};
                 }
-                .mlc-bt {
-                    width: 267px;
+                .mlc-bts {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
                     margin-top: 20px;
+                    .mlc-bt {
+                        max-width: 267px;
+                        flex: 1;
+                    }
+                }
+                .mint-amount {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    margin-top: 12px;
+                    justify-content: space-between;
+                    .ma-input {
+                        border-radius: 8px;
+                        border: 1px solid ${configColor.green};
+                        padding: 8px;
+                        display: flex;
+                        align-items: center;
+                        .mai-bt {
+                            border-radius: 4px;
+                            width: 24px;
+                            height: 24px;
+                            background-color: ${configColor.green};
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                        }
+                        .mai-main {
+                            width: 100px;
+                            background: transparent;
+                        }
+                    }
                 }
             }
         }
