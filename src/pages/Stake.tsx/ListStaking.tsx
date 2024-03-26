@@ -63,7 +63,7 @@ const ListStaking = ({ data }: IList) => {
                     <div className="sli-wrap">
                         <img src={gifBox} alt="" className="sli-gif" />
                         <div className="sli-light"></div>
-                        <img src={item >= 1500 ? imgHero : imgMonster} alt="" className="sli-img" />
+                        <img src={`https://blastwarsapi.click/${item}.png`} alt="" className="sli-img" />
                         <div className={`sli-check ${((typePicked === "monster" && item < 1500) || (typePicked === "human" && item >= 1500)) && "sli-check-active"}`}>
                             {listPicked.includes(item) && <FaCheck color={configColor.green} />}
                         </div>

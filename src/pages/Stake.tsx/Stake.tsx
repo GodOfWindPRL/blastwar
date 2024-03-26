@@ -7,18 +7,19 @@ import Statistic from "components/footer/Statistic";
 import StakeMain from "./StakeMain";
 import Leaderboard from "./Leaderboard";
 import { breakpointsMedias } from "constants/breakpoints";
+import useStaking from "helpers/contracts/useStaking";
 
 const Stake = () => {
     const [showBoard, setShowBoard] = useState(false);
-
+    const { listStaking } = useStaking();
 
     return (
         <Wrap className="">
             <div className="wrap-home relative">
-                {showBoard ? <Leaderboard onShowMain={() => { setShowBoard(false) }} /> : <StakeMain onShowBoard={() => { setShowBoard(true) }} />}
+                {showBoard ? <Leaderboard onShowMain={() => { setShowBoard(false) }} /> : <StakeMain onShowBoard={() => { setShowBoard(true) }} listStaking={listStaking} />}
                 <Logo />
                 <Wallet />
-                <Statistic />
+                <Statistic listStaking={listStaking} />
             </div>
         </Wrap>
     )

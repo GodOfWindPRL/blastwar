@@ -6,16 +6,19 @@ import numeral from "numeral";
 import ListStaking from "./ListStaking";
 import ListNonStaking from "./ListNonStaking";
 import { breakpointsMedias } from "constants/breakpoints";
-import useListStaked from "helpers/contracts/useListStaked";
 import { useAccount } from "wagmi";
 import { notifyToastify } from "helpers/notifyToastify";
 import useClaimReward from "helpers/contracts/useClaimReward";
 import BigNumber from "bignumber.js";
 import Button from "components/core/Button";
 import { CONTRACT_NFT } from "environments";
+import useStaking from "helpers/contracts/useStaking";
+import { BLAST_CHAIN, chains } from "constants/chains";
+import { formatListStaking } from "helpers/formatList";
 
 interface ISM {
-    onShowBoard: () => void
+    onShowBoard: () => void,
+    listStaking: bigint[]
 }
 
 type ListNon = number[]
@@ -25,11 +28,11 @@ type DataStake = {
     humanStealed: number | null,
 }
 
-const StakeMain = ({ onShowBoard }: ISM) => {
+const StakeMain = ({ onShowBoard, listStaking }: ISM) => {
     const { t } = useTranslation();
     const { address, isConnected } = useAccount()
     const [tab, setTab] = useState<"nonStaking" | "staking">("staking");
-    const { listStakedHuman, listStakedMonster } = useListStaked();
+
     const { earnedHuman, earnedMonster, onClaimReward, isLoadingClaimReward } = useClaimReward();
     const [listNonStake, setListNonStake] = useState<ListNon>([])
 
@@ -41,13 +44,11 @@ const StakeMain = ({ onShowBoard }: ISM) => {
 
     const getNonStake = async () => {
         try {
-            const dataFetch = await fetch(`https://api.routescan.io/v2/network/testnet/evm/168587773/address/${address}/erc721-holdings`);
+            const dataFetch = await fetch(`https://api.routescan.io/v2/network/${BLAST_CHAIN}/evm/${chains[0].id}/address/${address}/erc721-holdings`);
             const newList = await dataFetch.json();
-
             const newListBlast = newList.items.filter((item: any) => {
                 return item.tokenAddress === CONTRACT_NFT
             })
-            // console.log({ newListBlast });
             setListNonStake(newListBlast.map((item: any) => Number(item.tokenId)))
         } catch (error) {
             notifyToastify("error", "Get data NFT error.")
@@ -59,10 +60,6 @@ const StakeMain = ({ onShowBoard }: ISM) => {
             getNonStake()
         }
     }, [address, isConnected, tab])
-
-    const listStaking = useMemo(() => {
-        return [...listStakedHuman, ...listStakedMonster].sort();
-    }, [])
 
     return (
         <Wrap className="">
@@ -107,7 +104,7 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                                 <span className="text-2 color-green">{t("nftStaked")}</span>
                             </div>
                             <div className="slt-col-2">
-                                <span className="uppercase text-22 color-green">{numeral(listStakedHuman.length + listStakedMonster.length).format("0,0.[00]")}</span>
+                                <span className="uppercase text-22 color-green">{numeral(listStaking.length).format("0,0.[00]")}</span>
                             </div>
                         </div>
                         <div className="slt-row">
@@ -151,10 +148,10 @@ const StakeMain = ({ onShowBoard }: ISM) => {
                     {/* <span className="text-3 color-yellow uppercase" onClick={onShowBoard}>{t("leaderboard")}</span> */}
                 </div>
                 <div className={`sr-list`}>
-                    {tab === "staking" ? <ListStaking data={listStaking} /> : <ListNonStaking data={listNonStake} reload={getNonStake} />}
+                    {tab === "staking" ? <ListStaking data={formatListStaking(listStaking)} /> : <ListNonStaking data={listNonStake} reload={getNonStake} />}
                 </div>
                 <div className={`sr-list-2`}>
-                    <ListStaking data={listStaking} />
+                    <ListStaking data={formatListStaking(listStaking)} />
                     <ListNonStaking data={listNonStake} reload={getNonStake} />
                 </div>
             </div>

@@ -2,32 +2,43 @@ import configColor from 'constants/configColor';
 import styled from 'styled-components';
 import { FaCaretRight } from "react-icons/fa6";
 import iconLeft from "assets/images/left-yellow.png";
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import numeral from 'numeral';
 import { breakpointsMedias } from 'constants/breakpoints';
 import useTotalStake from 'helpers/contracts/useTotalStake';
+import { formatListStaking } from 'helpers/formatList';
 
 const MAX_SUPPLY_TOKEN = 1000000000
 
-const Statistic = () => {
+interface IStatistic {
+    listStaking: bigint[]
+}
+
+const Statistic = ({ listStaking }: IStatistic) => {
     const { t } = useTranslation();
-    const { totalStakeHuman, totalStakeMonster } = useTotalStake()
 
     const [data, setData] = useState({
         claimed: null,
         mcap: null,
     })
 
+    const totalStaking = useMemo(() => {
+        return {
+            human: formatListStaking(listStaking).filter((item) => item >= 1500).length,
+            monster: formatListStaking(listStaking).filter((item) => item < 1500).length,
+        }
+    }, [listStaking])
+
     return (
         <Wrap className='statistic'>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("humanStaked")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(totalStakeHuman.toString()).format(totalStakeHuman >= BigInt(1e6) ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(totalStaking.human).format(totalStaking.human >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
             </div>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("monsterStaked")}</span>
-                <span className="si-value text-42 color-yellow">{numeral(totalStakeMonster.toString()).format(totalStakeMonster >= BigInt(1e6) ? "0a,0.[00]" : "0,0")}</span>
+                <span className="si-value text-42 color-yellow">{numeral(totalStaking.monster).format(totalStaking.monster >= 1e6 ? "0a,0.[00]" : "0,0")}</span>
             </div>
             <div className="statis-item">
                 <span className="si-title text-center text-1 uppercase color-yellow">{t("warClaimed")}</span>

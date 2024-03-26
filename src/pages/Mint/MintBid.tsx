@@ -64,12 +64,6 @@ const MintBid = () => {
         }
     }
 
-    console.log(!(address && isConnected),
-        errBalance,
-        Number(userCommitted) >= 10,
-        enableSale,
-        Number(totalCommitted) >= MAX_SUPPLY)
-
     return (
         <Wrap className="">
             <div className="mint-left flex">

@@ -1,6 +1,6 @@
 import { Chain } from 'viem'
 
-const BLAST_CHAIN = process.env.REACT_APP_CHAIN || "" as string
+export const BLAST_CHAIN = process.env.REACT_APP_CHAIN || "" as string
 
 export const blastTestnet = {
     id: 168587773,
