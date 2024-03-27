@@ -244,6 +244,13 @@ const Wrap = styled.div`
                 position: relative;
                 flex: 1;
                 overflow: hidden;
+                padding-bottom: 70px;
+                ${breakpointsMedias.max1199} {
+                    padding-bottom: 40px;
+                }
+                ${breakpointsMedias.max991} {
+                    padding-bottom: 0px;
+                }
             }
             .sr-list-2 {
                 display: none;

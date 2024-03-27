@@ -101,20 +101,20 @@ const ListNonStaking = ({ data, reload }: IList) => {
                 {data.map((item, index) => <div
                     key={index}
                     className={`sl-item ${((typePicked === "human" && item < 1500) || (typePicked === "monster" && item >= 1500)) && "sl-item-disable"}`}
-                    onClick={() => { onPick(item) }}
+                // onClick={() => { onPick(item) }}
                 >
                     <div className="sli-wrap">
                         <img src={gifBox} alt="" className="sli-gif" />
                         <div className="sli-light"></div>
                         <img src={`https://blastwarsapi.click/${item}.png`} alt="" className="sli-img" />
-                        <div className={`sli-check ${((typePicked === "monster" && item < 1500) || (typePicked === "human" && item >= 1500)) && "sli-check-active"}`}>
+                        {/* <div className={`sli-check ${((typePicked === "monster" && item < 1500) || (typePicked === "human" && item >= 1500)) && "sli-check-active"}`}>
                             {listPicked.includes(item) && <FaCheck color={configColor.red} />}
-                        </div>
+                        </div> */}
                         <span className="sli-id color-white text-22">#{Number(item)}</span>
                     </div>
                 </div>)}
             </div>
-            <div className="stake-bt">
+            {/* <div className="stake-bt">
                 <Button
                     typeBt="red"
                     text="stakeAll"
@@ -122,7 +122,7 @@ const ListNonStaking = ({ data, reload }: IList) => {
                     isLoading={isLoadingStake || loading || isLoadingApprove}
                     disabled={listPicked.length === 0}
                 />
-            </div>
+            </div> */}
         </Wrap>
     )
 }
@@ -148,6 +148,7 @@ const Wrap = styled.div`
         background-image: url(${bgList});
         background-size: 100% auto;
         background-position: top;
+        align-content: flex-start;
         .sl-item {
             width: 25%;
             overflow: hidden;
